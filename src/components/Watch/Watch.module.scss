@@ -1,0 +1,39 @@
+.player1 {
+  .rectangle {
+    transition: all 0.2s ease-in;
+  }
+  &:hover .rectangle {
+    opacity: 1;
+  }
+}
+
+.player2 {
+  .rectangle2 {
+    transition: all 0.2s ease-in;
+  }
+  &:hover .rectangle2 {
+    opacity: 1;
+  }
+}
+
+// .tagsWatch
+/* width */
+.tagsWatch::-webkit-scrollbar {
+  height: 0px;
+}
+
+/* Track */ 
+.tagsWatch::-webkit-scrollbar-track {
+  background: transparent;
+
+}
+
+/* Handle */
+.tagsWatch::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+/* Handle on hover */
+.tagsWatch::-webkit-scrollbar-thumb:hover {
+  background: transparent;
+}

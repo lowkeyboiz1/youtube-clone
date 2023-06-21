@@ -1,0 +1,42 @@
+.menu-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 17px 0px;
+
+  &:hover {
+    background-color: #272727;
+    border-radius: 12px;
+  }
+
+  &.active {
+    color: white;
+
+    .icon {
+      display: none;
+    }
+
+    .active-icon {
+      display: flex;
+    }
+  }
+}
+
+.title {
+  font-size: 10px;
+  color: #f1f1f1;
+  font-weight: 400;
+  transform: translateY(5px);
+}
+
+.icon,
+.active-icon {
+  display: flex;
+  margin-top: 1px;
+}
+
+.active-icon {
+  display: none;
+}

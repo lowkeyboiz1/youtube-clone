@@ -1,0 +1,19 @@
+/* width */
+.tagsHome::-webkit-scrollbar {
+  height: 0px;
+}
+
+/* Track */
+.tagsHome::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+.tagsHome::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+/* Handle on hover */
+.tagsHome::-webkit-scrollbar-thumb:hover {
+  background: transparent;
+}

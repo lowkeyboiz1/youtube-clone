@@ -1,0 +1,45 @@
+.menu-item {
+  display: flex;
+  padding: 8px 12px;
+  align-items: center;
+  
+
+  &:hover {
+    background-color: #272727;
+    border-radius: 12px;
+  }
+
+  &.active {
+    color: white;
+    background-color: #272727;
+    border-radius: 12px;
+
+    .icon {
+      display: none;
+    }
+
+    .active-icon {
+      display: flex;
+    }
+
+    .title {
+      font-weight: 600;
+    }
+  }
+}
+
+.title {
+  font-size: 14px;
+  font-family: "Roboto", "Arial", sans-serif;
+  color: #f1f1f1;
+  font-weight: 400;
+}
+
+.icon,
+.active-icon {
+  display: flex;
+}
+
+.active-icon {
+  display: none;
+}
