@@ -3,11 +3,17 @@ import { useState } from 'react'
 
 function Channels() {
   const [subscribe, setSubscribe] = useState(true)
+  const [subscribeIndex, setSubscribeIndex] = useState(-1)
 
+  let arr = []
   const handleSubscribe = (index) => {
     setSubscribe(!subscribe)
-    console.log(index)
+    setSubscribeIndex(index)
   }
+
+  // const arrUser = [1, 2]
+  // const arrLocal = [1, 2, 3]
+  // arrLocal.map((item, index) => arrUser.includes(item) && console.log(item))
 
   // Sau này viết api lấy dữ liệu ra thay thế fakedData
   // fakeData sẽ là các kênh đã đăng kí
@@ -71,7 +77,7 @@ function Channels() {
                 </div>
                 <div className='subscribe w-[200px] flex items-center justify-center'>
                   <div className='hidden md:block' onClick={() => handleSubscribe(index)}>
-                    {subscribe ? (
+                    {subscribe && subscribeIndex === index ? (
                       <div className='cursor-pointer px-[14px] py-[8px] text-white bg-[#272727] rounded-[20px] text-[14px] font-semibold flex items-center gap-2 pr-[18px]'>
                         <div className=''>
                           <svg
