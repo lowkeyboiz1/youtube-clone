@@ -32,6 +32,11 @@ import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined'
 import HelpIcon from '@mui/icons-material/Help'
 import FeedbackOutlinedIcon from '@mui/icons-material/FeedbackOutlined'
 import FeedbackIcon from '@mui/icons-material/Feedback'
+import axios from 'axios'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { auth } from '../../config/firebase'
+import Avatar from '@mui/material/Avatar'
+import Skeleton from '@mui/material/Skeleton'
 
 const cx = classNames.bind(styles)
 
@@ -46,6 +51,7 @@ function Sidebar() {
   const [numberMore, setNumberMore] = useState(3)
   const toggleMenu = useSelector((state) => state.toggleSidebarReducer)
   const dispatch = useDispatch()
+  const [channleSubscribe, setChannleSubscribe] = useState([])
 
   const handleToggleMenu = () => {
     dispatch(toggle(toggleMenu))
@@ -100,6 +106,20 @@ function Sidebar() {
       setCount(0)
     }
   }, [url])
+
+  const [loggedInUser] = useAuthState(auth)
+  const getDataChannlesFormDB = async () => {
+    const result = await axios.post('http://localhost:4000/user/subscribeChannles', {
+      uid: loggedInUser?.uid,
+    })
+
+    setChannleSubscribe(result.data.currentUserSubscribeChannles)
+    console.log(result.data.currentUserSubscribeChannles)
+  }
+
+  useEffect(() => {
+    getDataChannlesFormDB()
+  }, [loggedInUser])
 
   return (
     <>
@@ -160,7 +180,7 @@ function Sidebar() {
                     onclick={() => handleToggleMenu()}
                     title='Thư viện'
                     icon={<LibraryIcon className='h-[24px] w-[24px] mr-[24px]' />}
-                    to={'/RegisterChanel'}
+                    to={'/Library'}
                     activeIcon={
                       <LibraryIconActive className='h-[24px] w-[24px] mr-[24px]' />
                     }
@@ -169,7 +189,8 @@ function Sidebar() {
                     onclick={() => handleToggleMenu()}
                     title='Video đã xem'
                     icon={<VideoViewedIcon className='h-[24px] w-[24px] mr-[24px]' />}
-                    to={'/RegisterChanel'}
+                    to={'/Library'}
+                    noActive={false}
                     activeIcon={
                       <VideoViewedIconActive className='h-[24px] w-[24px] mr-[24px]' />
                     }
@@ -178,7 +199,8 @@ function Sidebar() {
                     onclick={() => handleToggleMenu()}
                     title='Xem sau'
                     icon={<SeeLaterIcon className='h-[24px] w-[24px] mr-[24px]' />}
-                    to={'/RegisterChanel'}
+                    to={'/'}
+                    noActive={false}
                     activeIcon={
                       <SeeLaterActive className='h-[24px] w-[24px] mr-[24px]' />
                     }
@@ -188,7 +210,8 @@ function Sidebar() {
                     onclick={() => handleToggleMenu()}
                     title='Video đã thích'
                     icon={<LikeSideBarIcon className='h-[24px] w-[24px] mr-[24px]' />}
-                    to={'/RegisterChanel'}
+                    to={'/Liked'}
+                    noActive={true}
                     activeIcon={
                       <LikeSideBarActive className='h-[24px] w-[24px] mr-[24px]' />
                     }
@@ -198,11 +221,10 @@ function Sidebar() {
             </div>
             <div className='p-2 border-y-[1px] border-[#ffffff33] mt-3 py-3'>
               <div className='text-[17px] font-medium px-2 py-1'>Kênh đăng ký</div>
-              {Array(9)
-                .fill()
-                .map(
+              {channleSubscribe && channleSubscribe.length > 0 ? (
+                channleSubscribe.map(
                   (item, index) =>
-                    index <= numberMore && (
+                    index < numberMore && (
                       <Tippy
                         key={index}
                         content='TrungQuanDev - Một lập trình viên'
@@ -226,9 +248,20 @@ function Sidebar() {
                         </div>
                       </Tippy>
                     ),
-                )}
+                )
+              ) : (
+                <div className='channle-sub flex px-2 py-2 cursor-pointer items-center'>
+                  <div className='h-[24px] w-[24px] rounded-full overflow-hidden mr-6 flex-shrink-0'>
+                    <div className='object-cover h-full w-full bg-[#fff3] animate-pulse' />
+                  </div>
+                  <div className='title-channle bg-[#fff3] animate-pulse overflow-hidden line-clamp-1 h-[14px] w-[120px] text-[14px]'></div>
+                </div>
+              )}
 
-              <div className='' onClick={handleShow}>
+              <div
+                className={channleSubscribe?.length > 3 ? '' : 'hidden'}
+                onClick={handleShow}
+              >
                 {showMore ? (
                   <div className='show-more flex px-2 py-2 hover:rounded-[12px] hover:bg-[#272727] cursor-pointer'>
                     <div className='mr-6'>

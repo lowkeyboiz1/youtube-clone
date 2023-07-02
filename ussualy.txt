@@ -15,6 +15,44 @@
     addData();
   }, []);
 
+
+
+
+  const getData = async () => {
+    const category = 'Rap'
+    const docRef = doc(db, 'category', category)
+    const docSnap = await getDoc(docRef)
+
+    if (docSnap.exists()) {
+      const newObj1 = docSnap.data()
+
+      const transformedData = newObj1.items.map((item, index) => {
+        return {
+          videoId: item.id.videoId,
+          channelId: item.snippet.channelId,
+          channelTitle: item.snippet.channelTitle,
+          description: item.snippet.description,
+          publishTime: item.snippet.publishTime,
+          title: item.snippet.title,
+          highUrl: item.snippet.thumbnails.high.url,
+          urlChannel: newObj1.urlImgChannel[index],
+          category: category,
+        }
+      })
+      console.log(transformedData)
+    } else {
+      // docSnap.data() will be undefined in this case
+      console.log('No such document!')
+    }
+  }
+
+  useEffect(() => {
+    getData()
+  }, [])
+
+
+
+
   
 const docRef = doc(db, "cities", "SF");
 const docSnap = await getDoc(docRef);
@@ -25,3 +63,21 @@ if (docSnap.exists()) {
   // docSnap.data() will be undefined in this case
   console.log("No such document!");
 }
+
+
+
+
+
+Link_img
+"https://yt3.ggpht.com/aPrTeWQ0SLN64aJPenPh_05-joh_flEezaSQSKFS3okcqj1Q5iZ0FK9N04wBV5v3vOVeuUG1=s48-c-k-c0x00ffffff-no-rj"
+Link_video
+"'https://firebasestorage.googleapis.com/v0/b/clone-c4a3c.appspot.com/o/videosShortsYoutube%2Fronaldo-revenge-cr7-shorts-1280-ytshorts.savetube.me.mp4?alt=media&token=a3968e78-b56d-4729-888d-1823b96df1d6'"
+(string)
+Name_channle
+"@XTR_07_Official"
+Name_video
+"Ronaldo Revenge 😱😱 #cr7 #shorts"
+comment
+"19K"
+like
+"2.5M"

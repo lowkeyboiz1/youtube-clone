@@ -11,8 +11,6 @@ import {
   LibraryIconActive,
   LikeSideBarActive,
   LikeSideBarIcon,
-  ListVideosActive,
-  ListVideosIcon,
   RegisterChanelIcon,
   RegisterChanelIconActive,
   SeeLaterActive,
@@ -86,16 +84,17 @@ function HeaderOnly({ children }) {
                       onclick={() => handleToggleMenu()}
                       title='Thư viện'
                       icon={<LibraryIcon className='h-[24px] w-[24px] mr-[24px]' />}
-                      to={'/RegisterChanel'}
+                      to={'/Library'}
                       activeIcon={
                         <LibraryIconActive className='h-[24px] w-[24px] mr-[24px]' />
                       }
                     ></ItemSideBar>
                     <ItemSideBar
                       onclick={() => handleToggleMenu()}
+                      noActive={false}
                       title='Video đã xem'
                       icon={<VideoViewedIcon className='h-[24px] w-[24px] mr-[24px]' />}
-                      to={'/RegisterChanel'}
+                      to={'/Library'}
                       activeIcon={
                         <VideoViewedIconActive className='h-[24px] w-[24px] mr-[24px]' />
                       }
@@ -103,8 +102,9 @@ function HeaderOnly({ children }) {
                     <ItemSideBar
                       onclick={() => handleToggleMenu()}
                       title='Xem sau'
+                      noActive={false}
                       icon={<SeeLaterIcon className='h-[24px] w-[24px] mr-[24px]' />}
-                      to={'/RegisterChanel'}
+                      to={'/'}
                       activeIcon={
                         <SeeLaterActive className='h-[24px] w-[24px] mr-[24px]' />
                       }
@@ -156,7 +156,7 @@ function HeaderOnly({ children }) {
                       onclick={() => handleToggleMenu()}
                       title='Thư viện'
                       icon={<LibraryIcon className='h-[24px] w-[24px] mr-[24px]' />}
-                      to={'/RegisterChanel'}
+                      to={'/Library'}
                       activeIcon={
                         <LibraryIconActive className='h-[24px] w-[24px] mr-[24px]' />
                       }
@@ -164,8 +164,9 @@ function HeaderOnly({ children }) {
                     <ItemSideBar
                       onclick={() => handleToggleMenu()}
                       title='Video đã xem'
+                      noActive={false}
                       icon={<VideoViewedIcon className='h-[24px] w-[24px] mr-[24px]' />}
-                      to={'/RegisterChanel'}
+                      to={'/Library'}
                       activeIcon={
                         <VideoViewedIconActive className='h-[24px] w-[24px] mr-[24px]' />
                       }
@@ -173,6 +174,7 @@ function HeaderOnly({ children }) {
                     <ItemSideBar
                       onclick={() => handleToggleMenu()}
                       title='Xem sau'
+                      noActive={false}
                       icon={<SeeLaterIcon className='h-[24px] w-[24px] mr-[24px]' />}
                       to={'/RegisterChanel'}
                       activeIcon={

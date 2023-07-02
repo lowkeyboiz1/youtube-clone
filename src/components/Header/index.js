@@ -27,6 +27,7 @@ import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined'
 import NightlightOutlinedIcon from '@mui/icons-material/NightlightOutlined'
 import LanguageOutlinedIcon from '@mui/icons-material/LanguageOutlined'
+import axios from 'axios'
 
 const cx = classNames.bind(styles)
 
@@ -36,6 +37,8 @@ function Header() {
   const [openUserControl, setOpenUserControl] = useState(false)
   const [signInWithGoogle] = useSignInWithGoogle(auth)
   const [loggedInUser] = useAuthState(auth)
+
+  const [userInfo, setUserInfo] = useState([])
 
   useEffect(() => {
     const setUserInDb = async () => {
@@ -65,6 +68,23 @@ function Header() {
     setShowStartandEnd(!showStartandEnd)
     setShowInput(!showInput)
   }
+
+  const checkUserLogin = async () => {
+    if (loggedInUser) {
+      const resultUser = await axios.post('http://localhost:4000/auth/users', {
+        uid: loggedInUser.uid,
+      })
+
+      setUserInfo(resultUser.data.user)
+    }
+
+  }
+  //UserInfo is infomation of userlogin
+  console.log(userInfo)
+
+  useEffect(() => {
+    checkUserLogin()
+  }, [loggedInUser])
 
   const handleLogin = () => {
     signInWithGoogle()
@@ -196,7 +216,7 @@ function Header() {
                       <div className='item h-[40px] px-[16px] flex items-center hover:bg-[#ffffff1a] cursor-pointer'>
                         <div className='icon'>
                           <svg
-                            enable-background='new 0 0 24 24'
+                            enableBackground='new 0 0 24 24'
                             height='24'
                             viewBox='0 0 24 24'
                             width='24'
@@ -231,7 +251,7 @@ function Header() {
                       >
                         <div className='icon'>
                           <svg
-                            enable-background='new 0 0 24 24'
+                            enableBackground='new 0 0 24 24'
                             height='24'
                             viewBox='0 0 24 24'
                             width='24'
@@ -248,7 +268,7 @@ function Header() {
                       <div className='item relative h-[40px] px-[16px] flex items-center hover:bg-[#ffffff1a] cursor-pointer'>
                         <div className='icon'>
                           <svg
-                            enable-background='new 0 0 24 24'
+                            enableBackground='new 0 0 24 24'
                             height='24'
                             viewBox='0 0 24 24'
                             width='24'
@@ -289,7 +309,7 @@ function Header() {
                       <div className='item h-[40px] px-[16px] flex items-center hover:bg-[#ffffff1a] cursor-pointer'>
                         <div className='icon'>
                           <svg
-                            enable-background='new 0 0 24 24'
+                            enableBackground='new 0 0 24 24'
                             height='24'
                             viewBox='0 0 24 24'
                             width='24'
@@ -335,7 +355,7 @@ function Header() {
                       <div className='item relative h-[40px] px-[16px] flex items-center hover:bg-[#ffffff1a] cursor-pointer'>
                         <div className='icon'>
                           <svg
-                            enable-background='new 0 0 24 24'
+                            enableBackground='new 0 0 24 24'
                             height='24'
                             viewBox='0 0 24 24'
                             width='24'
@@ -352,7 +372,7 @@ function Header() {
                       <div className='item relative h-[40px] px-[16px] flex items-center hover:bg-[#ffffff1a] cursor-pointer'>
                         <div className='icon'>
                           <svg
-                            enable-background='new 0 0 24 24'
+                            enableBackground='new 0 0 24 24'
                             height='24'
                             viewBox='0 0 24 24'
                             width='24'
@@ -367,7 +387,7 @@ function Header() {
                       <div className='item relative h-[40px] px-[16px] flex items-center hover:bg-[#ffffff1a] cursor-pointer'>
                         <div className='icon'>
                           <svg
-                            enable-background='new 0 0 24 24'
+                            enableBackground='new 0 0 24 24'
                             height='24'
                             viewBox='0 0 24 24'
                             width='24'

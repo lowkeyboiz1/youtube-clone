@@ -6,11 +6,16 @@ import { useEffect, useRef, useState } from 'react'
 import { tags } from '../../pages/Home'
 import VideoItem from '../VideoItem'
 import { doc, getDoc } from 'firebase/firestore'
-import { db } from '../../config/firebase'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faShare, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
+import { auth, db } from '../../config/firebase'
+
 import Tippy from '@tippyjs/react'
 import Footer from '../Footer'
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt'
+import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt'
+import ThumbUpIcon from '@mui/icons-material/ThumbUp'
+import ThumbDownIcon from '@mui/icons-material/ThumbDown'
+import axios from 'axios'
+import { useAuthState } from 'react-firebase-hooks/auth'
 
 const cx = classNames.bind(styles)
 
@@ -29,6 +34,9 @@ function Watch() {
   const [player2CurrentTime, setPlayer2CurrentTime] = useState(0)
   const player1Ref = useRef(null)
   const player2Ref = useRef(null)
+  const [userInfo, setUserInfo] = useState([])
+  const [loggedInUser] = useAuthState(auth)
+
   // console.log(id);
 
   let JSONVideoId = JSON.parse(localStorage.getItem('idVideo'))
@@ -56,7 +64,12 @@ function Watch() {
     }
   }
   // const arr = []
-
+  //Call API get data homepage
+  const [apiTitle, setApiTitle] = useState([])
+  const getApi = async () => {
+    const result = await axios.get(`http://localhost:4000?category=${title}`)
+    setApiTitle(result.data.videos)
+  }
   useEffect(() => {
     getDataFromFirebase()
   }, [title])
@@ -129,6 +142,33 @@ function Watch() {
       setIsPlayer2Visible(true)
       setIsPlayer1Visible(false)
     }
+  }
+
+  useEffect(() => {
+    getApi()
+  }, [title])
+
+  const checkUserLogin = async () => {
+    if (loggedInUser) {
+      const resultUser = await axios.post('http://localhost:4000/auth/users', {
+        uid: loggedInUser.uid,
+      })
+
+      setUserInfo(resultUser.data.user)
+    }
+  }
+  //UserInfo is infomation of userlogin
+  console.log(userInfo)
+
+  useEffect(() => {
+    checkUserLogin()
+  }, [loggedInUser])
+
+  const handleLikeApi = async () => {
+    const result = await axios.post('http://localhost:4000/user/like?likeId=1', {
+      uid: userInfo[0].uid,
+    })
+    console.log(result)
   }
 
   return (
@@ -262,9 +302,9 @@ function Watch() {
                     <Tippy content='Tôi thích video này' arrow={false} placement='bottom'>
                       <div className='like cursor-pointer px-[14px] py-[6px] flex items-center border-r-[1px] border-[#525252] hover:bg-[#2b2b2b]'>
                         <div className='icon-like'>
-                          <FontAwesomeIcon icon={faThumbsUp} className='text-white' />
+                          <ThumbUpOffAltIcon />
                         </div>
-                        <div className='numberlike ml-[10px]'>9,3N</div>
+                        <div className='numberlike ml-[10px]'>9,3 N</div>
                       </div>
                     </Tippy>
                     <Tippy
@@ -272,22 +312,27 @@ function Watch() {
                       arrow={false}
                       placement='bottom'
                     >
-                      <div className='un-like cursor-pointer px-[14px] py-[6px] hover:bg-[#2b2b2b]'>
+                      <div className='un-like cursor-pointer px-[14px] py-[6px] pr-[10px] hover:bg-[#2b2b2b]'>
                         <div className='icon-unlike'>
-                          <FontAwesomeIcon
-                            icon={faThumbsUp}
-                            className='text-white rotate-180 pl-1'
-                          />
+                          <ThumbDownOffAltIcon />
                         </div>
                       </div>
                     </Tippy>
                   </div>
                   <Tippy content='Chia sẻ' arrow={false} placement='bottom'>
-                    <div className='share flex items-center px-[14px] py-[6px] rounded-[20px] bg-[#272727] hover:bg-[#2b2b2b]'>
+                    <div className='share cursor-pointer flex items-center px-[14px] py-[6px] rounded-[20px] bg-[#272727] hover:bg-[#2b2b2b]'>
                       <div className='icon-share'>
-                        <FontAwesomeIcon icon={faShare} />
+                        <svg
+                          height='24'
+                          viewBox='0 0 24 24'
+                          width='24'
+                          focusable='false'
+                          fill='currentColor'
+                        >
+                          <path d='M15 5.63 20.66 12 15 18.37V14h-1c-3.96 0-7.14 1-9.75 3.09 1.84-4.07 5.11-6.4 9.89-7.1l.86-.13V5.63M14 3v6C6.22 10.13 3.11 15.33 2 21c2.78-3.97 6.44-6 12-6v6l8-9-8-9z'></path>
+                        </svg>
                       </div>
-                      <div className='text-[14px] ml-[10px] cursor-pointer'>Chia sẻ</div>
+                      <div className='text-[14px] ml-[10px] '>Chia sẻ</div>
                     </div>
                   </Tippy>
 
@@ -359,7 +404,7 @@ function Watch() {
             )}
           </div>
           <div className='w-full'>
-            {videosData.map((item, index) => (
+            {/* {apiTitle.map((item, index) => (
               <VideoItem
                 key={`videoItem-${index}`}
                 item={item}
@@ -368,7 +413,18 @@ function Watch() {
                 small={true}
                 data={data}
               />
-            ))}
+            ))} */}
+            {apiTitle
+              .filter((item, index) => item.videoId !== id)
+              .map((item, index) => (
+                <VideoItem
+                  key={`videoItem-${index}`}
+                  item={item}
+                  index={index}
+                  small={true}
+                  data={data}
+                />
+              ))}
           </div>
         </div>
       </div>
