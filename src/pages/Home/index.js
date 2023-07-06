@@ -4,11 +4,12 @@ import styles from './Home.module.scss'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import VideoItem from '../../components/VideoItem'
-import { db } from '../../config/firebase'
+import { auth, db } from '../../config/firebase'
 import { doc, getDoc } from 'firebase/firestore'
 import Footer from '../../components/Footer'
 import SkeletonLoad from '../../components/SkeletonLoad'
 import axios from 'axios'
+import { useAuthState } from 'react-firebase-hooks/auth'
 
 const cx = classnames.bind(styles)
 
@@ -54,6 +55,10 @@ export const tags = [
 function Home() {
   const [count, setCount] = useState(0)
   const [title, setTitle] = useState('')
+  const [apiTitle, setApiTitle] = useState([])
+  const [loggedInUser] = useAuthState(auth)
+
+  const ITEMS_PER_PAGE = 9
 
   const handleClickTitle = (index) => {
     setCount(index)
@@ -61,14 +66,10 @@ function Home() {
   }
 
   //Call API get data homepage
-  const [apiTitle, setApiTitle] = useState([])
   const getApi = async () => {
     const result = await axios.get(`http://localhost:4000?category=${title}`)
     setApiTitle(result.data.videos)
   }
-
-
-  
 
   useEffect(() => {
     getApi()
@@ -108,7 +109,7 @@ function Home() {
             ))
           ) : (
             <div className='listItem w-full flex flex-wrap gap-4 md:justify-center'>
-              {Array(9)
+              {Array(ITEMS_PER_PAGE)
                 .fill()
                 .map((item, index) => (
                   <SkeletonLoad key={`skeleton-home-${index}`} />

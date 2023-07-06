@@ -20,6 +20,7 @@ body {
 html {
   overflow: auto;
   font-family: 'Roboto', sans-serif;
+  scroll-behavior: smooth;
 }
 
 html *::-webkit-scrollbar {

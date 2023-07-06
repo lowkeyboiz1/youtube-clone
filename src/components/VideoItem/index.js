@@ -7,11 +7,15 @@ import Tippy from '@tippyjs/react'
 import 'tippy.js/dist/tippy.css' // optional
 import { useNavigate } from 'react-router-dom'
 import { calculatorTime } from '../../util/calculatorTime'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { auth } from '../../config/firebase'
+import axios from 'axios'
 
 const cx = classnames.bind(styles)
 
 function VideoItem({ item, urlChannleImg, index, small, data, lib, search }) {
   const [listVideoSeen, setListVideoSeen] = useState([])
+  const [loggedInUser] = useAuthState(auth)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -21,7 +25,7 @@ function VideoItem({ item, urlChannleImg, index, small, data, lib, search }) {
     }
   }, [])
 
-  const handleNavigate = () => {
+  const handleNavigate = async () => {
     localStorage.setItem('idVideo', JSON.stringify(item.videoId))
     localStorage.setItem(
       'itemInfo',
@@ -33,6 +37,10 @@ function VideoItem({ item, urlChannleImg, index, small, data, lib, search }) {
         view: item.view,
         like: item.like,
         subscriber: item.subscriber,
+        channelId: item.channelId,
+        urlThumbnail: item.urlThumbnail,
+        videoId: item.videoId,
+        description: item.description,
       }),
     )
 
@@ -46,6 +54,9 @@ function VideoItem({ item, urlChannleImg, index, small, data, lib, search }) {
       view: item.view,
       like: item.like,
       subscriber: item.subscriber,
+      channelId: item.channelId,
+      urlThumbnail: item.urlThumbnail,
+      videoId: item.videoId,
     }
 
     const updatedList = [newVideo, ...listVideoSeen]
@@ -60,8 +71,23 @@ function VideoItem({ item, urlChannleImg, index, small, data, lib, search }) {
     })
     localStorage.setItem('listSeen', JSON.stringify(updatedUniqueList))
 
+    if (loggedInUser) {
+      const result = await axios.post('http://localhost:4000/user/listSeen', {
+        uid: loggedInUser.uid,
+        data: JSON.parse(localStorage.getItem('listSeen')),
+      })
+
+      console.log(result)
+    }
+
     navigate(`/Watch/${JSON.parse(localStorage.getItem('idVideo'))}`)
   }
+
+  const handleNavigateChannle = (e) => {
+    e.stopPropagation()
+    navigate(`/DetailChannle/${item.channelId}`)
+  }
+
   return (
     // <div className="">
     //   {item.videoId !== JSON.parse(localStorage.getItem("idVideo")) &&
@@ -88,11 +114,7 @@ function VideoItem({ item, urlChannleImg, index, small, data, lib, search }) {
             small && ' md:!min-w-[170px] md:!max-h-[100px]'
           }`}
         >
-          <img
-            src={item.urlThumbnail}
-            alt=''
-            className='!w-full !h-full object-fill md:object-cover'
-          />
+          <img src={item.urlThumbnail} alt='' className='!w-full !h-full object-fill' />
         </div>
       </div>
 
@@ -103,11 +125,14 @@ function VideoItem({ item, urlChannleImg, index, small, data, lib, search }) {
       >
         {!small && (
           <div
-            className={`ava flex w-[36px] h-[36px] flex-shrink-0${
-              search && 'md:hidden'
-            }`}
+            className={`ava flex w-[36px] h-[36px] flex-shrink-0${search && 'md:hidden'}`}
           >
-            <img src={item.urlChannel} alt='' className='h-full w-full rounded-full' />
+            <img
+              onClick={(e) => handleNavigateChannle(e)}
+              src={item.urlChannel}
+              alt=''
+              className='h-full w-full rounded-full'
+            />
           </div>
         )}
         <div
@@ -131,6 +156,7 @@ function VideoItem({ item, urlChannleImg, index, small, data, lib, search }) {
             {search && (
               <div className='w-[24px] h-[24px] mr-2 hidden md:block'>
                 <img
+                  onClick={(e) => handleNavigateChannle(e)}
                   src={item.urlChannel}
                   alt=''
                   className='h-full w-full rounded-full'
@@ -143,7 +169,10 @@ function VideoItem({ item, urlChannleImg, index, small, data, lib, search }) {
               }`}
             >
               <Tippy content={item ? item.channelTitle : ''} arrow={false}>
-                <div className={search && 'md:text-[12px]'}>
+                <div
+                  className={search && 'md:text-[12px]'}
+                  onClick={(e) => handleNavigateChannle(e)}
+                >
                   {item ? item.channelTitle : ''}
                 </div>
               </Tippy>
@@ -163,7 +192,7 @@ function VideoItem({ item, urlChannleImg, index, small, data, lib, search }) {
           </div>
 
           <div
-            className={`view-time flex center ${small && 'text-[12px]'} ${
+            className={`view-time flex center text-[12px] ${small && 'text-[12px]'} ${
               search && 'lg:order-1 md:text-[12px]'
             }`}
           >

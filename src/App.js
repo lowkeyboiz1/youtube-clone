@@ -1,27 +1,21 @@
-import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { publicRoutes } from "./routes/index";
-import DefaultLayout from "./layouts/DefaultLayout";
-import { Fragment } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "./config/firebase";
-
-
+import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { publicRoutes } from './routes/index'
+import DefaultLayout from './layouts/DefaultLayout'
+import { Fragment } from 'react'
 
 function App() {
-  const [loggedInUser, load, err] = useAuthState(auth);
-
   return (
     <Router>
-      <div className="bg-black text-white font-roboto">
+      <div className='bg-black text-white font-roboto'>
         <Routes>
           {publicRoutes.map((route, index) => {
-            const Page = route.component;
-            let Layout = DefaultLayout;
+            const Page = route.component
+            let Layout = DefaultLayout
             if (route.layout) {
-              Layout = route.layout;
+              Layout = route.layout
             } else if (route.layout === null) {
-              Layout = Fragment;
+              Layout = Fragment
             }
             return (
               <Route
@@ -33,12 +27,12 @@ function App() {
                   </Layout>
                 }
               ></Route>
-            );
+            )
           })}
         </Routes>
       </div>
     </Router>
-  );
+  )
 }
 
-export default App;
+export default App

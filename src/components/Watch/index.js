@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import ReactPlayer from 'react-player'
 import classNames from 'classnames/bind'
 import styles from './Watch.module.scss'
@@ -14,8 +14,12 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt'
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt'
 import ThumbUpIcon from '@mui/icons-material/ThumbUp'
 import ThumbDownIcon from '@mui/icons-material/ThumbDown'
+import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt'
 import axios from 'axios'
 import { useAuthState } from 'react-firebase-hooks/auth'
+import Snackbar from '@mui/material/Snackbar'
+import IconButton from '@mui/material/IconButton'
+import CloseIcon from '@mui/icons-material/Close'
 
 const cx = classNames.bind(styles)
 
@@ -23,8 +27,6 @@ function Watch() {
   const { id } = useParams()
   const [idVideo, setIdVideo] = useState('')
   const [count, setCount] = useState(0)
-  const [videosData, setVideosData] = useState([])
-  const [urlChannleImg, setUrlChannleImg] = useState([])
   const [data, setData] = useState({})
   const [infoVideo, setInfoVideo] = useState([])
   const [showMore, setShowMore] = useState(true)
@@ -34,10 +36,27 @@ function Watch() {
   const [player2CurrentTime, setPlayer2CurrentTime] = useState(0)
   const player1Ref = useRef(null)
   const player2Ref = useRef(null)
-  const [userInfo, setUserInfo] = useState([])
+  const [open, setOpen] = useState(false)
   const [loggedInUser] = useAuthState(auth)
 
+  const [like, setLike] = useState(false)
+  const [unLike, setUnLike] = useState(false)
+  const [subscribed, setSubscribed] = useState(false)
+
   // console.log(id);
+  const navigate = useNavigate()
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+
+    setOpen(false)
+  }
+  const action = (
+    <IconButton size='small' aria-label='close' color='inherit' onClick={handleClose}>
+      <CloseIcon fontSize='small' />
+    </IconButton>
+  )
 
   let JSONVideoId = JSON.parse(localStorage.getItem('idVideo'))
   let JSONVideoInfo = JSON.parse(localStorage.getItem('itemInfo'))
@@ -48,21 +67,7 @@ function Watch() {
   }, [id])
 
   const [title, setTitle] = useState('')
-  const getDataFromFirebase = async () => {
-    const docRef = doc(db, 'category', title || 'Tất cả')
-    const docSnap = await getDoc(docRef)
 
-    if (docSnap.exists()) {
-      const data = docSnap.data()
-      setData(data)
-      setVideosData(data.items)
-      // setVideosData(prev => [...prev, data.items]);
-      setUrlChannleImg(data.urlImgChannel)
-    } else {
-      // docSnap.data() will be undefined in this case
-      console.log('No such document!')
-    }
-  }
   // const arr = []
   //Call API get data homepage
   const [apiTitle, setApiTitle] = useState([])
@@ -70,12 +75,11 @@ function Watch() {
     const result = await axios.get(`http://localhost:4000?category=${title}`)
     setApiTitle(result.data.videos)
   }
-  useEffect(() => {
-    getDataFromFirebase()
-  }, [title])
+
   useEffect(() => {
     setIdVideo(JSONVideoId)
   }, [id])
+
   const handleClickTitle = (index) => {
     setCount(index)
     setTitle(tags[index].title)
@@ -111,22 +115,14 @@ function Watch() {
   const handlePlayer1Progress = (progress) => {
     if (isPlayer1Visible) {
       setPlayer1CurrentTime(progress.playedSeconds)
-
-      // if (!isPlayer2Visible) {
       player2Ref.current.seekTo(progress.playedSeconds)
-
-      // }
     }
   }
 
   const handlePlayer2Progress = (progress) => {
     if (isPlayer2Visible) {
       setPlayer2CurrentTime(progress.playedSeconds)
-
-      // if (!isPlayer1Visible) {
       player1Ref.current.seekTo(progress.playedSeconds)
-
-      // }
     }
   }
 
@@ -148,29 +144,72 @@ function Watch() {
     getApi()
   }, [title])
 
-  const checkUserLogin = async () => {
-    if (loggedInUser) {
-      const resultUser = await axios.post('http://localhost:4000/auth/users', {
-        uid: loggedInUser.uid,
-      })
-
-      setUserInfo(resultUser.data.user)
+  const checkStatusSubscribe = async (uid) => {
+    try {
+      const result = await axios.get(`http://localhost:4000/user/subscribed/${uid}/${id}`)
+      setSubscribed(result.data.isSubscribed)
+    } catch (error) {
+      console.error('Error fetching video info:', error)
+      // Handle the error (e.g., show an error message to the user)
     }
   }
-  //UserInfo is infomation of userlogin
-  console.log(userInfo)
-
   useEffect(() => {
-    checkUserLogin()
-  }, [loggedInUser])
+    window.scrollTo(0, 0)
+    const localUserInfo = JSON.parse(localStorage.getItem('userInfo'))
+    if (localUserInfo) {
+      checkStatusSubscribe(localUserInfo.uid)
+    }
+  }, [])
 
-  const handleLikeApi = async () => {
-    const result = await axios.post('http://localhost:4000/user/like?likeId=1', {
-      uid: userInfo[0].uid,
-    })
-    console.log(result)
+  const handleSubscribedUI = async () => {
+    const localUserInfo = JSON.parse(localStorage.getItem('userInfo'))
+    if (localUserInfo) {
+      const result = await axios.post('http://localhost:4000/user/subscribe', {
+        uid: localUserInfo.uid,
+        channleId: id,
+        itemChannle: {
+          channelId: infoVideo.channelId,
+          VideoTitle: infoVideo.VideoTitle,
+          publishTime: infoVideo.publishTime,
+          videoId: infoVideo.videoId,
+          description: infoVideo.description,
+          channelTitle: infoVideo.channelTitle,
+          urlChannel: infoVideo.urlChannel,
+          urlThumbnail: infoVideo.urlThumbnail,
+          view: infoVideo.view,
+          like: infoVideo.like,
+          subscriber: infoVideo.subscriber,
+        },
+      })
+
+      console.log(result)
+    }
+
+    setOpen(true)
+    setSubscribed(!subscribed)
   }
 
+  const handleLikeUi = () => {
+    if (like) {
+      // unlike
+      setLike(false)
+    } else {
+      //like
+      setUnLike(false)
+      setLike(true)
+    }
+  }
+
+  const handleUnLikeUI = () => {
+    if (unLike) {
+      //like
+      setUnLike(false)
+    } else {
+      //unlike
+      setLike(false)
+      setUnLike(true)
+    }
+  }
   return (
     // pt-80px
     <div
@@ -178,6 +217,13 @@ function Watch() {
         !isPlayer1Visible ? 'md:pt-[80px]' : 'md:pt-[56px]'
       }`}
     >
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message={subscribed ? 'Đã đăng ký kênh' : 'Đã xóa đăng ký'}
+        action={action}
+      />
       {/* chế độ mặc định = block */}
       <div
         className={cx(
@@ -194,7 +240,6 @@ function Watch() {
           width='100%'
           height='100%'
           onProgress={handlePlayer1Progress}
-          // playing
           onPlay={handlePlayer1Play}
         />
         <Tippy content='Chế độ rạp chiếu phim (t)' arrow={false}>
@@ -278,33 +323,76 @@ function Watch() {
               </div>
               <div className='channle-info-like md:flex items-center justify-between mt-[8px]'>
                 <div className='flex gap-3'>
-                  <div className='img-channle h-[40px] w-[40px]'>
+                  <div
+                    className='img-channle h-[40px] w-[40px] cursor-pointer'
+                    onClick={() => navigate(`/DetailChannle/${infoVideo.channelId}`)}
+                  >
                     <img
                       className='h-full w-full rounded-full'
                       src={infoVideo ? infoVideo.urlAva : 'not fond info Video'}
                       alt=''
                     />
                   </div>
-                  <div className='flex items-center gap-[24px]'>
+                  <div className='flex items-center gap-[10px]'>
                     <div className='flex justify-center flex-col'>
-                      <div className='text-[16px] overflow-hidden line-clamp-1 max-w-[150px]'>
+                      <div
+                        className='text-[16px] overflow-hidden line-clamp-1 max-w-[100px] cursor-pointer'
+                        onClick={() => navigate(`/DetailChannle/${infoVideo.channelId}`)}
+                      >
                         {infoVideo ? infoVideo.titleChannle : 'not fond info Video'}
                       </div>
-                      <div className='text-[12px] text-[#AAA]'>10,3 Tr người đăng ký</div>
+
+                      <div className='text-[12px] text-[#AAA]'>
+                        {infoVideo.subscriber} người đăng ký
+                      </div>
                     </div>
-                    <div className='cursor-pointer px-[14px] py-[8px] text-black bg-white rounded-[20px] text-[14px] font-semibold'>
-                      Đăng ký
+                    <div className='' onClick={handleSubscribedUI}>
+                      {!subscribed ? (
+                        <div className='cursor-pointer px-[14px] py-[8px] text-black bg-white rounded-[20px] text-[14px] font-semibold'>
+                          Đăng ký
+                        </div>
+                      ) : (
+                        <div className='cursor-pointer flex items-center px-[10px] py-[8px] text-white bg-[#272727] rounded-[20px] text-[14px] font-semibold'>
+                          <div className='h-[24px] w-[24px]'>
+                            <svg
+                              enableBackground='new 0 0 24 24'
+                              viewBox='0 0 24 24'
+                              focusable='false'
+                              fill='currentColor'
+                              className='h-full w-full'
+                            >
+                              <path d='M10 20h4c0 1.1-.9 2-2 2s-2-.9-2-2zm10-2.65V19H4v-1.65l2-1.88v-5.15C6 7.4 7.56 5.1 10 4.34v-.38c0-1.42 1.49-2.5 2.99-1.76.65.32 1.01 1.03 1.01 1.76v.39c2.44.75 4 3.06 4 5.98v5.15l2 1.87zm-1 .42-2-1.88v-5.47c0-2.47-1.19-4.36-3.13-5.1-1.26-.53-2.64-.5-3.84.03C8.15 6.11 7 7.99 7 10.42v5.47l-2 1.88V18h14v-.23z'></path>
+                            </svg>
+                          </div>
+                          <div className='ml-1'>Đã đăng ký</div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
                 <div className='flex gap-2 mt-[12px] md:mt-0'>
                   <div className='control-like flex items-center bg-[#272727] rounded-[20px] overflow-hidden'>
-                    <Tippy content='Tôi thích video này' arrow={false} placement='bottom'>
-                      <div className='like cursor-pointer px-[14px] py-[6px] flex items-center border-r-[1px] border-[#525252] hover:bg-[#2b2b2b]'>
-                        <div className='icon-like'>
-                          <ThumbUpOffAltIcon />
+                    <Tippy
+                      content={like ? 'Bỏ thích' : 'Tôi thích video này'}
+                      arrow={false}
+                      placement='bottom'
+                    >
+                      <div
+                        className='like cursor-pointer px-[14px] py-[6px] flex items-center border-r-[1px] border-[#525252] hover:bg-[#2b2b2b]'
+                        onClick={handleLikeUi}
+                      >
+                        {like ? (
+                          <div className='icon-like'>
+                            <ThumbUpIcon />
+                          </div>
+                        ) : (
+                          <div className='icon-like'>
+                            <ThumbUpOffAltIcon />
+                          </div>
+                        )}
+                        <div className='numberlike ml-[10px] text-[14px]'>
+                          {infoVideo.like}
                         </div>
-                        <div className='numberlike ml-[10px]'>9,3 N</div>
                       </div>
                     </Tippy>
                     <Tippy
@@ -312,10 +400,19 @@ function Watch() {
                       arrow={false}
                       placement='bottom'
                     >
-                      <div className='un-like cursor-pointer px-[14px] py-[6px] pr-[10px] hover:bg-[#2b2b2b]'>
-                        <div className='icon-unlike'>
-                          <ThumbDownOffAltIcon />
-                        </div>
+                      <div
+                        onClick={handleUnLikeUI}
+                        className='un-like cursor-pointer px-[14px] py-[6px] pr-[10px] hover:bg-[#2b2b2b]'
+                      >
+                        {unLike ? (
+                          <div className='icon-unlike'>
+                            <ThumbDownAltIcon />
+                          </div>
+                        ) : (
+                          <div className='icon-unlike'>
+                            <ThumbDownOffAltIcon />
+                          </div>
+                        )}
                       </div>
                     </Tippy>
                   </div>

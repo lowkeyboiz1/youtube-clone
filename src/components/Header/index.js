@@ -38,8 +38,6 @@ function Header() {
   const [signInWithGoogle] = useSignInWithGoogle(auth)
   const [loggedInUser] = useAuthState(auth)
 
-  const [userInfo, setUserInfo] = useState([])
-
   useEffect(() => {
     const setUserInDb = async () => {
       try {
@@ -74,25 +72,20 @@ function Header() {
       const resultUser = await axios.post('http://localhost:4000/auth/users', {
         uid: loggedInUser.uid,
       })
-
-      setUserInfo(resultUser.data.user)
+      localStorage.setItem('userInfo', JSON.stringify(resultUser.data.user))
     }
-
   }
-  //UserInfo is infomation of userlogin
-  console.log(userInfo)
-
-  useEffect(() => {
-    checkUserLogin()
-  }, [loggedInUser])
 
   const handleLogin = () => {
     signInWithGoogle()
   }
+  checkUserLogin()
   const handleLogout = async () => {
     try {
       handleClose()
       await signOut(auth)
+      localStorage.removeItem('userInfo')
+      localStorage.removeItem('listSeen')
     } catch (error) {
       console.log('logout error', error)
     }
@@ -104,6 +97,7 @@ function Header() {
   const handleClose = () => {
     setOpenUserControl(false)
   }
+
   return (
     <header
       className={`flex justify-between h-[56px] md:pl-4 md:px-4 bg-black items-center fixed w-full z-10 ${
@@ -138,7 +132,7 @@ function Header() {
           </div>
         )}
         <Menu content='Tìm kiếm bằng giọng nói'>
-          <div className='h-[40px] w-[40px] bg-[#161616] rounded-none md:rounded-full'>
+          <div className='h-[36px] w-[36px] bg-[#161616] rounded-none md:rounded-full flex-shrink-0'>
             <ItemIconHeader className='rounded-none'>
               <VoiceIcon className='h-[24px] w-[24px] text-white' />
             </ItemIconHeader>
@@ -182,7 +176,7 @@ function Header() {
                   <div className='user'>
                     <img
                       className='h-[40px] w-[40px] mr-[12px] rounded-full cursor-pointer'
-                      src={loggedInUser.photoURL}
+                      src={loggedInUser?.photoURL}
                       alt=''
                     />
                   </div>

@@ -1,15 +1,35 @@
 import Tippy from '@tippyjs/react'
-import { useState } from 'react'
+import axios from 'axios'
+import { useEffect, useState } from 'react'
 
 function Channels() {
-  const [subscribe, setSubscribe] = useState(true)
-  const [subscribeIndex, setSubscribeIndex] = useState(-1)
-
-  let arr = []
-  const handleSubscribe = (index) => {
-    setSubscribe(!subscribe)
-    setSubscribeIndex(index)
+  const [channles, setChannles] = useState([])
+  const handleSubscribe = async (item) => {
+    console.log(item)
+    const localUserInfo = JSON.parse(localStorage.getItem('userInfo'))
+    if (localUserInfo) {
+      const result = await axios.post('http://localhost:4000/user/subscribe', {
+        uid: localUserInfo.uid,
+        channleId: item.channleId,
+        itemChannle: {
+          ...item.itemChannle,
+        },
+      })
+      console.log(result)
+    }
   }
+
+  const getChannlesHaveSubscribed = async (uid) => {
+    const result = await axios.get(`http://localhost:4000/user/subscriptions/${uid}`)
+    setChannles(result.data.subscriptions)
+  }
+
+  useEffect(() => {
+    const localUserInfo = JSON.parse(localStorage.getItem('userInfo'))
+    if (localUserInfo) {
+      getChannlesHaveSubscribed(localUserInfo.uid)
+    }
+  }, [])
 
   // const arrUser = [1, 2]
   // const arrLocal = [1, 2, 3]
@@ -21,26 +41,28 @@ function Channels() {
   return (
     <div className='h-full w-full bg-black min-h-[calc(100vh_-_56px)]'>
       <div className='wrapper pt-[30px]'>
-        {fakeData && fakeData.length > 0 ? (
+        {channles && channles.length > 0 ? (
           <>
-            {fakeData.map((item, index) => (
+            {channles.map((item, index) => (
               <div
                 key={index}
-                className='item flex items-center justify-center mt-[16px]'
+                className='item ml-2 md:ml-0 flex items-center md:justify-center mt-[16px] xs:px-[20px] md:px-0'
               >
-                <div className='w-[280px] md:w-[360px] flex justify-center flex-shrink-0'>
-                  <div className='img-channle w-[136px] h-[136px] rounded-full overflow-hidden'>
+                <div className='w-[40px] xs:w-[100px] md:w-[280px] lg:w-[360px] flex justify-center flex-shrink-0'>
+                  <div className='img-channle w-[40px] h-[40px] xs:w-[100px] xs:h-[100px] md:w-[126px] md:h-[126px] rounded-full overflow-hidden'>
                     <img
                       className='h-full w-full object-cover'
-                      src='https://yt3.googleusercontent.com/DnF7_67_DOyb5d7O0YPF94SLvLYIn6sAodWonN2BnfVHnFPQKS41qNetPkugplbEGP6g3cRRl5I=s176-c-k-c0x00ffffff-no-rj-mo'
+                      src={item.itemChannle.urlChannel}
                       alt=''
                     />
                   </div>
                 </div>
-                <div className='info-channle w-[26%] lg:w-[48%]'>
+                <div className='info-channle w-[50%] lg:w-[48%] ml-2 xs:ml-4 md:ml-0'>
                   <div className='fullname-channle flex items-center'>
-                    <Tippy content='AsmrProg'>
-                      <div className='name text-[18px]'>AsmrProg</div>
+                    <Tippy content={item.itemChannle.channelTitle}>
+                      <div className='name text-[14px] xs:text-[16px] md:text-[18px]'>
+                        {item.itemChannle.channelTitle}
+                      </div>
                     </Tippy>
                     <div className='check'>
                       <svg
@@ -55,30 +77,37 @@ function Channels() {
                       </svg>
                     </div>
                   </div>
-                  <div className='infoView flex items-center text-[#aaa] text-[12px]'>
-                    <div className='subscriber'>1 người đăng ký</div>
-                    <div className='mx-1'>•</div>
-                    <div className='total-video'>1 video</div>
+                  <div className='infoView items-center text-[#aaa] text-[12px] hidden xs:flex'>
+                    <div className='subscriber'>
+                      {item.itemChannle.subscriber} người đăng ký
+                    </div>
                   </div>
-                  <div className='desc text-[#aaa] text-[12px] line-clamp-2 overflow-hidden'>
-                    Hello, It's me Reza Mehdikhanlou and welcome to my channel "AsmrProg".
-                    Here I upload ASMR programming tutorials related to HTML, CSS, Sass,
-                    JavaScript, React, PHP, Frameworks such as Bootstrap and more along
-                    with creative UI/UX Designs, CSS Animation and Effects. You in this
-                    channel will learn how to Create Responsive Websites and web apps
-                    using modern languages, frameworks, and libraries! AsmrProg is a
-                    community for web developers from all levels to learn and grow their
-                    skills in front-end and back-end web development. I hope that you will
-                    learn something & to stay tuned subscribe to the channel to get latest
-                    updates so do Subscribe to our channel and press the bell icon to get
-                    notification first. You can support me only by subscribing my channel!
-                    i don't want money support! ♡ Subscribe → https://bit.ly/3Lf1K4A
+                  <div className='hidden xs:block'>
+                    <div className='desc text-[#aaa] text-[12px] line-clamp-2 overflow-hidden'>
+                      Hello, It's me Reza Mehdikhanlou and welcome to my channel
+                      "AsmrProg". Here I upload ASMR programming tutorials related to
+                      HTML, CSS, Sass, JavaScript, React, PHP, Frameworks such as
+                      Bootstrap and more along with creative UI/UX Designs, CSS Animation
+                      and Effects. You in this channel will learn how to Create Responsive
+                      Websites and web apps using modern languages, frameworks, and
+                      libraries! AsmrProg is a community for web developers from all
+                      levels to learn and grow their skills in front-end and back-end web
+                      development. I hope that you will learn something & to stay tuned
+                      subscribe to the channel to get latest updates so do Subscribe to
+                      our channel and press the bell icon to get notification first. You
+                      can support me only by subscribing my channel! i don't want money
+                      support! ♡ Subscribe → https://bit.ly/3Lf1K4A
+                    </div>
                   </div>
                 </div>
-                <div className='subscribe w-[200px] flex items-center justify-center'>
-                  <div className='hidden md:block' onClick={() => handleSubscribe(index)}>
-                    {subscribe && subscribeIndex === index ? (
-                      <div className='cursor-pointer px-[14px] py-[8px] text-white bg-[#272727] rounded-[20px] text-[14px] font-semibold flex items-center gap-2 pr-[18px]'>
+
+                <div className='subscribe w-[120px] md:w-[200px] flex items-center justify-end md:justify-center'>
+                  <div className=''>
+                    {item && item.channleId.length > 0 ? (
+                      <div
+                        onClick={() => handleSubscribe(item)}
+                        className='cursor-pointer px-[14px] py-[6px] md:py-[8px] text-white bg-[#272727] rounded-[20px] text-[10px] md:text-[14px] font-semibold flex items-center gap-2 pr-[18px]'
+                      >
                         <div className=''>
                           <svg
                             height='24'
@@ -94,7 +123,10 @@ function Channels() {
                         <div className=''>Đã đăng ký</div>
                       </div>
                     ) : (
-                      <div className='cursor-pointer px-[14px] py-[8px] text-black bg-white rounded-[20px] text-[14px] font-semibold'>
+                      <div
+                        onClick={() => handleSubscribe(item)}
+                        className='cursor-pointer px-[14px] py-[6px] md:py-[8px] text-black bg-white rounded-[20px] text-[14px] font-semibold'
+                      >
                         Đăng ký
                       </div>
                     )}
@@ -107,7 +139,7 @@ function Channels() {
           <>
             {Array(9)
               .fill()
-              .map((index) => (
+              .map((item, index) => (
                 <div
                   key={`skeleton-channels-${index}`}
                   className='item flex items-center justify-center mt-[16px]'
@@ -122,7 +154,7 @@ function Channels() {
                     <div className='bg-[#fff3] animate-pulse h-[16px] w-full mt-2 rounded-sm'></div>
                   </div>
                   <div className='w-[200px] flex items-center justify-center'>
-                    <div className='hidden md:block' onClick={handleSubscribe}>
+                    <div className='hidden md:block'>
                       <div className='text-[14px] font-semibold flex items-center gap-2 pr-[18px] bg-[#fff3] animate-pulse h-[36px] w-[120px] mt-2 rounded-3xl'></div>
                     </div>
                   </div>

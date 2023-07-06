@@ -6,6 +6,7 @@ import Library from "../pages/Library";
 import Watch from "../components/Watch";
 import HeaderOnly from "../layouts/HeaderOnly";
 import Channels from "../pages/Channels";
+import DetailChannle from "../pages/DetailChannle";
 
 const publicRoutes = [
   { path: "/", component: Home },
@@ -15,6 +16,7 @@ const publicRoutes = [
   { path: "/Shorts", component: Shorts },
   { path: "/Channels", component: Channels },
   { path: "/Search/:key", component: Search},
+  { path: "/DetailChannle/:id", component: DetailChannle},
   { path: "/Watch/:id", component: Watch, layout: HeaderOnly },
 ];
 

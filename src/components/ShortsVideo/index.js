@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import ReactPlayer from 'react-player'
 import ThumbUpIcon from '@mui/icons-material/ThumbUp'
 import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt'
 import useElementOnScreen from '../../useElementOnScreen'
@@ -12,9 +11,17 @@ function ShortsVideoItem({
   like,
   comment,
 }) {
-  const playerRef = useRef(null)
-
+  const [isMuted, setIsMuted] = useState(true)
   const [isPlay, setIsPlay] = useState(false)
+
+
+  
+
+
+
+
+  const playerRef = useRef(null)
+  const warpperRef = useRef(null)
 
   const handleVideo = () => {
     if (isPlay) {
@@ -37,7 +44,11 @@ function ShortsVideoItem({
       if (!isPlay) {
         playerRef.current.currentTime = 0
         playerRef.current.play()
+        localStorage.setItem('title', JSON.stringify(titleVideo))
         setIsPlay(true)
+        setTimeout(() => {
+          setIsMuted(false) // Bỏ mute sau 0.1 giây
+        }, 100)
       }
     } else {
       if (isPlay) {
@@ -47,8 +58,18 @@ function ShortsVideoItem({
     }
   }, [isVisibile])
 
+  useEffect(() => {
+    document.title = JSON.parse(localStorage.getItem('title'))
+    return () => {
+      document.title = 'Shorts - Youtube'
+    }
+  }, [JSON.parse(localStorage.getItem('title'))])
+
   return (
-    <div className='flex snap-start justify-center mb-[56px] md:mb-[5vh] h-[calc(100vh_-_56px)] md:mt-[5vh] md:h-auto relative md:static'>
+    <div
+      ref={warpperRef}
+      className='flex snap-start justify-center mb-[56px] md:mb-[5vh] h-[calc(100vh_-_56px)] md:mt-[5vh] md:h-auto relative md:static'
+    >
       <div className='video md:w-[315px] w-full h-full md:h-[86vh] rounded-[8px] relative'>
         <div
           className='reactplayerVideo object-cover w-full h-full overflow-hidden'
@@ -60,7 +81,8 @@ function ShortsVideoItem({
             src={urlVideo}
             autoPlay
             loop
-            className='h-full w-full object-cover md:object-cover'
+            muted={isMuted}
+            className='h-full w-full object-fill md:object-cover'
           ></video>
         </div>
         <div className='video-info absolute bottom-[10px] md:bottom-[16px] right-0 left-0 md:px-[10px] pl-[10px] pr-[64px] flex flex-col'>

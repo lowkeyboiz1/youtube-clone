@@ -1,4 +1,27 @@
 .time-upload::before {
-    content: "•";
-    margin: 0 4px;
-  }
+  content: '•';
+  margin: 0 4px;
+}
+
+//listVideo
+
+/* width */
+.listVideo::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+/* Track */
+.listVideo::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+.listVideo::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+/* Handle on hover */
+.listVideo::-webkit-scrollbar-thumb:hover {
+  background: transparent;
+}
