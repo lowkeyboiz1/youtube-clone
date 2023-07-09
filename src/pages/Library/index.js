@@ -8,25 +8,31 @@ import { calculatorTime } from '../../util/calculatorTime'
 import { collection, doc, getDoc, setDoc } from 'firebase/firestore'
 import axios from 'axios'
 import Button from '../../components/Button'
+import { useSelector } from 'react-redux'
 const cx = classNames.bind(styles)
 
 function Library() {
   const [loggedInUser] = useAuthState(auth)
   const [signInWithGoogle] = useSignInWithGoogle(auth)
-  const [dataSeened, setDataSeened] = useState(
-    JSON.parse(localStorage.getItem('listSeen')),
-  )
+  const [dataSeened, setDataSeened] = useState([])
 
-  const handleLogin = () => {
-    signInWithGoogle()
+  const listSeenState = useSelector((state) => state.listSeenReducer)
+
+  const handleLogin = async () => {
+    await signInWithGoogle()
+    const dataListSeen = await JSON.parse(localStorage.getItem('listSeen'))
+    setDataSeened(dataListSeen)
   }
+
   useEffect(() => {
-    setDataSeened(JSON.parse(localStorage.getItem('listSeen')))
-  }, [])
+    if (loggedInUser) {
+      const dataListSeen = JSON.parse(localStorage.getItem('listSeen'))
+      setDataSeened(dataListSeen)
+    }
+  }, [loggedInUser])
 
   useEffect(() => {
     document.title = 'Thư viện - Youtube' // Thay đổi tiêu đề của trang khi component được render
-
     // Có thể trả về một hàm cleanup từ useEffect để đặt lại tiêu đề khi component bị unmount
     return () => {
       document.title = 'Youtube' // Đặt lại tiêu đề gốc khi component bị unmount
@@ -34,22 +40,44 @@ function Library() {
   }, [])
   const navigate = useNavigate()
 
-  const handleWatch = (item) => {
-    localStorage.setItem('idVideo', JSON.stringify(item.idVideo))
+  const handleWatch = async (item) => {
+    localStorage.setItem('idVideo', JSON.stringify(item.videoId))
     localStorage.setItem(
       'itemInfo',
       JSON.stringify({
-        idVideo: item.idVideo,
+        idVideo: item.videoId,
         urlAva: item.urlAva,
         urlVideo: item.urlVideo,
         titleVideo: item.titleVideo,
         titleChannle: item.titleChannle,
-        publicAt: calculatorTime(item.publicAt),
+        channelId: item.channelId,
+        publicAt: item.publicAt,
+        urlThumbnail: item.urlThumbnail,
         view: item.view,
         like: item.like,
         subscriber: item.subscriber,
       }),
     )
+
+    console.log(item)
+    if (loggedInUser) {
+      const result = await axios.post('http://localhost:4000/user/listSeen', {
+        uid: loggedInUser.uid,
+        data: {
+          urlAva: item.urlAva,
+          titleVideo: item.titleVideo,
+          titleChannle: item.titleChannle,
+          publicAt: item.publicAt,
+          view: item.view,
+          like: item.like,
+          subscriber: item.subscriber,
+          channelId: item.channelId,
+          urlThumbnail: item.urlThumbnail,
+          videoId: item.videoId,
+          description: item.description,
+        },
+      })
+    }
     navigate(`/Watch/${JSON.parse(localStorage.getItem('idVideo'))}`)
   }
 
@@ -90,8 +118,8 @@ function Library() {
                 'listVideo flex flex-1 w-full overflow-x-scroll md:flex-wrap mt-2 md:mt-0 md:px-10',
               )}
             >
-              {dataSeened && dataSeened.length > 0 ? (
-                dataSeened.map((item, index) => (
+              {listSeenState && listSeenState.length > 0 ? (
+                listSeenState.map((item, index) => (
                   <div
                     onClick={() => handleWatch(item)}
                     key={`itemVideo-${index}`}
@@ -100,11 +128,11 @@ function Library() {
                     <div className='imgItemVideo rounded-[8px] overflow-hidden md:border-[1px] md:border-[#1f1f1f]'>
                       <img
                         className='w-full max-h-[120px] min-h-[90px] md:min-h-[120px] object-cover'
-                        src={item.urlVideo}
+                        src={item.urlThumbnail}
                         alt=''
                       />
                     </div>
-                    <div className='titleVideo text-[12px] md:text-[14px] mt-1 overflow-hidden line-clamp-2 '>
+                    <div className='titleVideo text-[12px] md:text-[14px] mt-1 overflow-hidden line-clamp-2 xs:line-clamp-1 md:line-clamp-2 '>
                       {item.titleVideo}
                     </div>
                     <div className='titleChannle text-[12px] mt-2 gap-1 text-[#AAAAAA] flex items-center'>

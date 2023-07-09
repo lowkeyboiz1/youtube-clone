@@ -15,7 +15,7 @@ import Menu from '../Menu'
 import 'tippy.js/dist/tippy.css' // optional
 import Tippy from '@tippyjs/react/headless'
 import MenuHeader from '../MenuHeader'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { useAuthState, useSignInWithGoogle } from 'react-firebase-hooks/auth'
@@ -28,6 +28,9 @@ import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettin
 import NightlightOutlinedIcon from '@mui/icons-material/NightlightOutlined'
 import LanguageOutlinedIcon from '@mui/icons-material/LanguageOutlined'
 import axios from 'axios'
+import { useDispatch, useSelector } from 'react-redux'
+import { listSeen } from '../../redux/actions/listSeen'
+import { loginStatus } from '../../redux/actions/loginStatus'
 
 const cx = classNames.bind(styles)
 
@@ -37,6 +40,20 @@ function Header() {
   const [openUserControl, setOpenUserControl] = useState(false)
   const [signInWithGoogle] = useSignInWithGoogle(auth)
   const [loggedInUser] = useAuthState(auth)
+  const listSeenState = useSelector((state) => state.listSeenReducer)
+  const dispatch = useDispatch()
+
+  const checkUserLogin = async () => {
+    if (loggedInUser) {
+      const resultUser = await axios.post('http://localhost:4000/auth/users', {
+        uid: loggedInUser.uid,
+      })
+      localStorage.setItem('userInfo', JSON.stringify(resultUser.data.user))
+      localStorage.setItem('listSeen', JSON.stringify(resultUser.data.user.listSeen))
+      dispatch(listSeen(resultUser.data.user.listSeen))
+      dispatch(loginStatus(!!loggedInUser))
+    }
+  }
 
   useEffect(() => {
     const setUserInDb = async () => {
@@ -59,6 +76,7 @@ function Header() {
 
     if (loggedInUser) {
       setUserInDb()
+      checkUserLogin()
     }
   }, [loggedInUser])
 
@@ -67,25 +85,19 @@ function Header() {
     setShowInput(!showInput)
   }
 
-  const checkUserLogin = async () => {
-    if (loggedInUser) {
-      const resultUser = await axios.post('http://localhost:4000/auth/users', {
-        uid: loggedInUser.uid,
-      })
-      localStorage.setItem('userInfo', JSON.stringify(resultUser.data.user))
-    }
-  }
-
   const handleLogin = () => {
     signInWithGoogle()
   }
-  checkUserLogin()
   const handleLogout = async () => {
+    localStorage.removeItem('userInfo')
+
+    localStorage.removeItem('listSeen')
+
+    dispatch(loginStatus(!loggedInUser))
+
     try {
       handleClose()
       await signOut(auth)
-      localStorage.removeItem('userInfo')
-      localStorage.removeItem('listSeen')
     } catch (error) {
       console.log('logout error', error)
     }

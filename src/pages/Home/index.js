@@ -1,11 +1,8 @@
 import { useEffect, useState } from 'react'
 import classnames from 'classnames/bind'
 import styles from './Home.module.scss'
-import 'slick-carousel/slick/slick.css'
-import 'slick-carousel/slick/slick-theme.css'
 import VideoItem from '../../components/VideoItem'
 import { auth, db } from '../../config/firebase'
-import { doc, getDoc } from 'firebase/firestore'
 import Footer from '../../components/Footer'
 import SkeletonLoad from '../../components/SkeletonLoad'
 import axios from 'axios'
@@ -70,6 +67,11 @@ function Home() {
     const result = await axios.get(`http://localhost:4000?category=${title}`)
     setApiTitle(result.data.videos)
   }
+
+  
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   useEffect(() => {
     getApi()

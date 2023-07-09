@@ -24,60 +24,68 @@ function VideoItem({ item, urlChannleImg, index, small, data, lib, search }) {
       setListVideoSeen(JSON.parse(storedData))
     }
   }, [])
-
   const handleNavigate = async () => {
     localStorage.setItem('idVideo', JSON.stringify(item.videoId))
     localStorage.setItem(
       'itemInfo',
       JSON.stringify({
+        idVideo: item.videoId,
         urlAva: item.urlChannel,
+        urlVideo: item.urlThumbnail,
         titleVideo: item.VideoTitle,
         titleChannle: item.channelTitle,
+        channelId: item.channelId,
         publicAt: calculatorTime(item.publishTime),
+        urlThumbnail: item.urlThumbnail,
         view: item.view,
         like: item.like,
         subscriber: item.subscriber,
-        channelId: item.channelId,
-        urlThumbnail: item.urlThumbnail,
-        videoId: item.videoId,
-        description: item.description,
       }),
     )
 
-    const newVideo = {
-      idVideo: item.videoId,
-      urlAva: item.urlChannel,
-      urlVideo: item.urlThumbnail,
-      titleVideo: item.VideoTitle,
-      titleChannle: item.channelTitle,
-      publicAt: calculatorTime(item.publishTime),
-      view: item.view,
-      like: item.like,
-      subscriber: item.subscriber,
-      channelId: item.channelId,
-      urlThumbnail: item.urlThumbnail,
-      videoId: item.videoId,
-    }
+    // const newVideo = {
+    //   idVideo: item.videoId,
+    //   urlAva: item.urlChannel,
+    //   urlVideo: item.urlThumbnail,
+    //   titleVideo: item.VideoTitle,
+    //   titleChannle: item.channelTitle,
+    //   publicAt: calculatorTime(item.publishTime),
+    //   view: item.view,
+    //   like: item.like,
+    //   subscriber: item.subscriber,
+    //   channelId: item.channelId,
+    //   urlThumbnail: item.urlThumbnail,
+    //   videoId: item.videoId,
+    // }
 
-    const updatedList = [newVideo, ...listVideoSeen]
-    const uniqueList = Array.from(new Set(updatedList.map((video) => video.idVideo))).map(
-      (idVideo) => updatedList.find((video) => video.idVideo === idVideo),
-    )
-    // Đưa phần tử bị trùng lên đầu mảng
-    const updatedUniqueList = uniqueList.sort((a, b) => {
-      if (a.idVideo === newVideo.idVideo) return -1
-      if (b.idVideo === newVideo.idVideo) return 1
-      return 0
-    })
-    localStorage.setItem('listSeen', JSON.stringify(updatedUniqueList))
+    // const updatedList = [newVideo, ...listVideoSeen]
+    // const uniqueList = Array.from(new Set(updatedList.map((video) => video.idVideo))).map(
+    //   (idVideo) => updatedList.find((video) => video.idVideo === idVideo),
+    // )
+    // // Đưa phần tử bị trùng lên đầu mảng
+    // const updatedUniqueList = uniqueList.sort((a, b) => {
+    //   if (a.idVideo === newVideo.idVideo) return -1
+    //   if (b.idVideo === newVideo.idVideo) return 1
+    //   return 0
+    // })
 
     if (loggedInUser) {
       const result = await axios.post('http://localhost:4000/user/listSeen', {
         uid: loggedInUser.uid,
-        data: JSON.parse(localStorage.getItem('listSeen')),
+        data: {
+          urlAva: item.urlChannel,
+          titleVideo: item.VideoTitle,
+          titleChannle: item.channelTitle,
+          publicAt: calculatorTime(item.publishTime),
+          view: item.view,
+          like: item.like,
+          subscriber: item.subscriber,
+          channelId: item.channelId,
+          urlThumbnail: item.urlThumbnail,
+          videoId: item.videoId,
+          description: item.description,
+        },
       })
-
-      console.log(result)
     }
 
     navigate(`/Watch/${JSON.parse(localStorage.getItem('idVideo'))}`)

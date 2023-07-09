@@ -8,10 +8,10 @@ import { Link } from 'react-router-dom'
 import { useAuthState, useSignInWithGoogle } from 'react-firebase-hooks/auth'
 import Button from '../../components/Button'
 import axios from 'axios'
+import { useSelector } from 'react-redux'
 
 function RegisterChanel() {
   //register is dataform mongodb user subscriber
-  let resgister = []
   const [loggedInUser] = useAuthState(auth)
   const [videosData, setVideosData] = useState([])
 
@@ -38,9 +38,11 @@ function RegisterChanel() {
   useEffect(() => {
     getDataFromFirebase()
   }, [])
+  const loginState = useSelector((state) => state.loginStatusReducer)
 
   const getChannlesHaveSubscribed = async (uid) => {
     const result = await axios.get(`http://localhost:4000/user/subscriptions/${uid}`)
+    console.log(result.data)
     setChannles(result.data.subscriptions)
   }
 
@@ -49,7 +51,7 @@ function RegisterChanel() {
     if (localUserInfo) {
       getChannlesHaveSubscribed(localUserInfo.uid)
     }
-  }, [])
+  }, [loginState])
 
   return (
     <div className='mt-[40px]'>

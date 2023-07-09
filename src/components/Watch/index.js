@@ -43,7 +43,6 @@ function Watch() {
   const [unLike, setUnLike] = useState(false)
   const [subscribed, setSubscribed] = useState(false)
 
-  // console.log(id);
   const navigate = useNavigate()
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -145,9 +144,14 @@ function Watch() {
   }, [title])
 
   const checkStatusSubscribe = async (uid) => {
+    const channleId = JSON.parse(localStorage.getItem('itemInfo')).channelId
+    console.log(channleId)
     try {
-      const result = await axios.get(`http://localhost:4000/user/subscribed/${uid}/${id}`)
+      const result = await axios.get(
+        `http://localhost:4000/user/subscribed/${uid}/${channleId}`,
+      )
       setSubscribed(result.data.isSubscribed)
+      console.log(result.data)
     } catch (error) {
       console.error('Error fetching video info:', error)
       // Handle the error (e.g., show an error message to the user)
@@ -162,19 +166,20 @@ function Watch() {
   }, [])
 
   const handleSubscribedUI = async () => {
+    console.log(infoVideo)
     const localUserInfo = JSON.parse(localStorage.getItem('userInfo'))
     if (localUserInfo) {
       const result = await axios.post('http://localhost:4000/user/subscribe', {
         uid: localUserInfo.uid,
-        channleId: id,
+        channleId: infoVideo.channelId,
         itemChannle: {
           channelId: infoVideo.channelId,
-          VideoTitle: infoVideo.VideoTitle,
-          publishTime: infoVideo.publishTime,
+          VideoTitle: infoVideo.titleVideo,
+          publishTime: infoVideo.publicAt,
           videoId: infoVideo.videoId,
           description: infoVideo.description,
-          channelTitle: infoVideo.channelTitle,
-          urlChannel: infoVideo.urlChannel,
+          channelTitle: infoVideo.titleChannle,
+          urlChannel: infoVideo.urlAva,
           urlThumbnail: infoVideo.urlThumbnail,
           view: infoVideo.view,
           like: infoVideo.like,
@@ -182,6 +187,7 @@ function Watch() {
         },
       })
 
+      console.log(infoVideo)
       console.log(result)
     }
 

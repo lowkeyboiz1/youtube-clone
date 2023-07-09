@@ -4,8 +4,14 @@ import { useEffect, useState } from 'react'
 
 function Channels() {
   const [channles, setChannles] = useState([])
+  const [subscribeStatus, setSubscribeStatus] = useState(true)
+
+  const getChannlesHaveSubscribed = async (uid) => {
+    const result = await axios.get(`http://localhost:4000/user/subscriptions/${uid}`)
+    console.log(result.data.subscriptions)
+    setChannles(result.data.subscriptions)
+  }
   const handleSubscribe = async (item) => {
-    console.log(item)
     const localUserInfo = JSON.parse(localStorage.getItem('userInfo'))
     if (localUserInfo) {
       const result = await axios.post('http://localhost:4000/user/subscribe', {
@@ -15,13 +21,10 @@ function Channels() {
           ...item.itemChannle,
         },
       })
-      console.log(result)
+      // console.log(result.data.user)
+      getChannlesHaveSubscribed(localUserInfo.uid)
+      setSubscribeStatus(result.data.user.subscribed)
     }
-  }
-
-  const getChannlesHaveSubscribed = async (uid) => {
-    const result = await axios.get(`http://localhost:4000/user/subscriptions/${uid}`)
-    setChannles(result.data.subscriptions)
   }
 
   useEffect(() => {
@@ -31,16 +34,10 @@ function Channels() {
     }
   }, [])
 
-  // const arrUser = [1, 2]
-  // const arrLocal = [1, 2, 3]
-  // arrLocal.map((item, index) => arrUser.includes(item) && console.log(item))
-
-  // Sau này viết api lấy dữ liệu ra thay thế fakedData
-  // fakeData sẽ là các kênh đã đăng kí
-  const fakeData = ['1', '1', '2']
   return (
     <div className='h-full w-full bg-black min-h-[calc(100vh_-_56px)]'>
       <div className='wrapper pt-[30px]'>
+        {console.log(channles)}
         {channles && channles.length > 0 ? (
           <>
             {channles.map((item, index) => (
@@ -56,6 +53,8 @@ function Channels() {
                       alt=''
                     />
                   </div>
+
+                  {console.log(item)}
                 </div>
                 <div className='info-channle w-[50%] lg:w-[48%] ml-2 xs:ml-4 md:ml-0'>
                   <div className='fullname-channle flex items-center'>
@@ -84,26 +83,14 @@ function Channels() {
                   </div>
                   <div className='hidden xs:block'>
                     <div className='desc text-[#aaa] text-[12px] line-clamp-2 overflow-hidden'>
-                      Hello, It's me Reza Mehdikhanlou and welcome to my channel
-                      "AsmrProg". Here I upload ASMR programming tutorials related to
-                      HTML, CSS, Sass, JavaScript, React, PHP, Frameworks such as
-                      Bootstrap and more along with creative UI/UX Designs, CSS Animation
-                      and Effects. You in this channel will learn how to Create Responsive
-                      Websites and web apps using modern languages, frameworks, and
-                      libraries! AsmrProg is a community for web developers from all
-                      levels to learn and grow their skills in front-end and back-end web
-                      development. I hope that you will learn something & to stay tuned
-                      subscribe to the channel to get latest updates so do Subscribe to
-                      our channel and press the bell icon to get notification first. You
-                      can support me only by subscribing my channel! i don't want money
-                      support! ♡ Subscribe → https://bit.ly/3Lf1K4A
+                      {item.itemChannle.description}
                     </div>
                   </div>
                 </div>
 
                 <div className='subscribe w-[120px] md:w-[200px] flex items-center justify-end md:justify-center'>
                   <div className=''>
-                    {item && item.channleId.length > 0 ? (
+                    {!item.itemChannle.subscribed > 0 ? (
                       <div
                         onClick={() => handleSubscribe(item)}
                         className='cursor-pointer px-[14px] py-[6px] md:py-[8px] text-white bg-[#272727] rounded-[20px] text-[10px] md:text-[14px] font-semibold flex items-center gap-2 pr-[18px]'
@@ -137,7 +124,7 @@ function Channels() {
           </>
         ) : (
           <>
-            {Array(9)
+            {/* {Array(9)
               .fill()
               .map((item, index) => (
                 <div
@@ -159,7 +146,10 @@ function Channels() {
                     </div>
                   </div>
                 </div>
-              ))}
+              ))} */}
+            <div className='min-h-[calc(100vh_-_56px)] mt-[-40px] bg-black text-[20px] text-center flex justify-center items-center'>
+              Các kênh bạn đăng ký sẽ xuất hiện ở đây.
+            </div>
           </>
         )}
       </div>

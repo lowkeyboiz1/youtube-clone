@@ -14,12 +14,6 @@ function ShortsVideoItem({
   const [isMuted, setIsMuted] = useState(true)
   const [isPlay, setIsPlay] = useState(false)
 
-
-  
-
-
-
-
   const playerRef = useRef(null)
   const warpperRef = useRef(null)
 
@@ -65,6 +59,10 @@ function ShortsVideoItem({
     }
   }, [JSON.parse(localStorage.getItem('title'))])
 
+  const handleSubscribe = () => {
+    console.log(urlVideo, titleVideo, titleChannle, urlChannleImg, like, comment)
+  }
+
   return (
     <div
       ref={warpperRef}
@@ -98,7 +96,10 @@ function ShortsVideoItem({
                 {titleChannle}
               </div>
             </div>
-            <div className='dangki text-[10px] md:text-[14px] h-[20px] md:h-[36px] px-2 md:px-4 leading-[20px] md:leading-[36px] bg-red-900 md:bg-white text-white md:text-[black] hover:md:bg-[#e4e4e4] cursor-pointer font-medium rounded-[4px] md:rounded-[18px]'>
+            <div
+              onClick={handleSubscribe}
+              className='dangki text-[10px] md:text-[14px] h-[20px] md:h-[36px] px-2 md:px-4 leading-[20px] md:leading-[36px] bg-red-900 md:bg-white text-white md:text-[black] hover:md:bg-[#e4e4e4] cursor-pointer font-medium rounded-[4px] md:rounded-[18px]'
+            >
               Đăng ký
             </div>
           </div>
