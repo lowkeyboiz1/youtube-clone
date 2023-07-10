@@ -8,11 +8,10 @@ import SkeletonLoad from '../../components/SkeletonLoad'
 import Snackbar from '@mui/material/Snackbar'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
-import { useAuthState, useSignInWithGoogle } from 'react-firebase-hooks/auth'
+import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '../../config/firebase'
 import { useSelector } from 'react-redux'
-import Tippy from '@tippyjs/react/headless'
-import Button from '../../components/Button'
+
 import Login from '../../components/Login'
 
 const cx = classNames.bind(styles)

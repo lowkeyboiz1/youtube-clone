@@ -21,13 +21,13 @@ function Search() {
       setVideosData(data.items)
       setUrlChannleImg(data.urlImgChannel)
     } else {
-      // docSnap.data() will be undefined in this case
       console.log('No such document!')
     }
   }
   // const arr = []
 
   const { key } = useParams()
+
   const getResultSearch = async () => {
     const result = await axios.get(`http://localhost:4000/search/${key}`)
     setResultSearch(result.data.result)

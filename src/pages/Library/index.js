@@ -1,11 +1,9 @@
 import { useAuthState, useSignInWithGoogle } from 'react-firebase-hooks/auth'
-import { auth, db } from '../../config/firebase'
+import { auth } from '../../config/firebase'
 import { useEffect, useState } from 'react'
 import classNames from 'classnames/bind'
 import styles from './Library.module.scss'
 import { useNavigate } from 'react-router-dom'
-import { calculatorTime } from '../../util/calculatorTime'
-import { collection, doc, getDoc, setDoc } from 'firebase/firestore'
 import axios from 'axios'
 import Button from '../../components/Button'
 import { useSelector } from 'react-redux'
@@ -14,22 +12,12 @@ const cx = classNames.bind(styles)
 function Library() {
   const [loggedInUser] = useAuthState(auth)
   const [signInWithGoogle] = useSignInWithGoogle(auth)
-  const [dataSeened, setDataSeened] = useState([])
 
   const listSeenState = useSelector((state) => state.listSeenReducer)
 
   const handleLogin = async () => {
     await signInWithGoogle()
-    const dataListSeen = await JSON.parse(localStorage.getItem('listSeen'))
-    setDataSeened(dataListSeen)
   }
-
-  useEffect(() => {
-    if (loggedInUser) {
-      const dataListSeen = JSON.parse(localStorage.getItem('listSeen'))
-      setDataSeened(dataListSeen)
-    }
-  }, [loggedInUser])
 
   useEffect(() => {
     document.title = 'Thư viện - Youtube' // Thay đổi tiêu đề của trang khi component được render

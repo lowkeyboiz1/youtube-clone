@@ -41,16 +41,23 @@ function Search({ className, blur }) {
 
   const handleSearchApi = async (inputValue) => {
     if (inputValue && inputValue.length > 0) {
-      const searchResultApi = await axios.get(
-        `http://localhost:4000/search/${inputValue}`,
-      )
-      setSearchApiResult(searchResultApi.data.result)
+      try {
+        const searchResultApi = await axios.get(
+          `http://localhost:4000/search/${inputValue}`,
+        )
+        setSearchApiResult(searchResultApi.data.result)
+
+        console.log(searchResultApi.data.result)
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 
   useEffect(() => {
     if (inputValue.length === 0) {
       setSearchApiResult([])
+      setShowResult(false)
     }
     const debounceTimer = setTimeout(() => {
       // Xử lý logic sau thời gian debounce

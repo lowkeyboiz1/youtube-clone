@@ -262,11 +262,9 @@ function Sidebar() {
                               className='channle-sub flex px-4 py-2 hover:rounded-[12px] hover:bg-[#272727] cursor-pointer'
                             >
                               <div className='h-[24px] w-[24px] rounded-full overflow-hidden mr-6 flex-shrink-0'>
-                                <img
-                                  className='object-cover h-full w-full'
-                                  src={item.itemChannle.urlChannel}
-                                  alt=''
-                                />
+                                Image className='object-cover h-full w-full' src=
+                                {item.itemChannle.urlChannel}
+                                alt='' />
                               </div>
                               <div className='title-channle ml-[-4px] overflow-hidden line-clamp-1 max-w-[120px] text-[14px]'>
                                 {item.itemChannle.channelTitle}
@@ -283,7 +281,9 @@ function Sidebar() {
                       </div>
                       <div className='title-channle bg-[#fff3] animate-pulse overflow-hidden line-clamp-1 h-[14px] w-[120px] text-[14px]'></div> */}
 
-                      <div className='px-2 text-[14px]'>Hãy đăng ký kênh để không bỏ lỡ video hấp dẫn</div>
+                      <div className='px-2 text-[14px]'>
+                        Hãy đăng ký kênh để không bỏ lỡ video hấp dẫn
+                      </div>
                     </div>
                   )}
                 </>
@@ -352,7 +352,7 @@ function Sidebar() {
                 )}
               </div>
             </div>
-            
+
             <div className='py-2 border-y-[1px] border-[#ffffff33]'>
               <div className='text-[16px] font-medium p-1 px-4'>Khám phá</div>
               <ItemSideBar

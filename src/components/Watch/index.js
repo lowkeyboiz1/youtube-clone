@@ -2,7 +2,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import ReactPlayer from 'react-player'
 import classNames from 'classnames/bind'
 import styles from './Watch.module.scss'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { tags } from '../../pages/Home'
 import VideoItem from '../VideoItem'
 import { doc, getDoc } from 'firebase/firestore'
@@ -20,6 +20,7 @@ import { useAuthState } from 'react-firebase-hooks/auth'
 import Snackbar from '@mui/material/Snackbar'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
+import SkeletonLoad from '../SkeletonLoad'
 
 const cx = classNames.bind(styles)
 
@@ -34,6 +35,8 @@ function Watch() {
   const [isPlayer2Visible, setIsPlayer2Visible] = useState(true)
   const [player1CurrentTime, setPlayer1CurrentTime] = useState(0)
   const [player2CurrentTime, setPlayer2CurrentTime] = useState(0)
+  const [isFirstRender, setIsFirstRender] = useState(true)
+
   const player1Ref = useRef(null)
   const player2Ref = useRef(null)
   const [open, setOpen] = useState(false)
@@ -65,23 +68,78 @@ function Watch() {
     })
   }, [id])
 
-  const [title, setTitle] = useState('')
+  const [title, setTitle] = useState('Tất cả')
+  const ITEMS_PER_PAGE = 9
+
+  const [limit, setLimit] = useState(ITEMS_PER_PAGE)
+  const [offset, setOffset] = useState(0)
+
+  const [hasMore, setHasMore] = useState(false)
+
+  const [isLoading, setIsLoading] = useState(false)
+
+  const observer = useRef()
+
+  const lastBookElementRef = useCallback(
+    (node) => {
+      if (observer.current) {
+        observer.current.disconnect()
+      }
+      console.log(node)
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          console.log('visible')
+          setIsLoading(true)
+          setLimit((prevLimit) => prevLimit + ITEMS_PER_PAGE)
+          setOffset((prevOffset) => prevOffset + ITEMS_PER_PAGE)
+        }
+      })
+
+      if (node) {
+        observer.current.observe(node)
+      }
+    },
+    [hasMore],
+  )
 
   // const arr = []
   //Call API get data homepage
   const [apiTitle, setApiTitle] = useState([])
+  // Call API get data homepage
   const getApi = async () => {
-    const result = await axios.get(`http://localhost:4000?category=${title}`)
-    setApiTitle(result.data.videos)
+    setIsLoading(true) // Bắt đầu loading
+
+    setTimeout(async () => {
+      try {
+        const result = await axios.get(
+          `http://localhost:4000/?category=${title}&limit=${
+            isFirstRender ? 9 : limit
+          }&offset=${isFirstRender ? 0 : offset}`,
+        )
+        setHasMore(result.data.videos.length > 0)
+
+        isFirstRender
+          ? setApiTitle(result.data.videos)
+          : setApiTitle((prevDataApi) => [...prevDataApi, ...result.data.videos])
+        setIsLoading(false) // Kết thúc loading sau 2 giây
+        setIsFirstRender(false)
+      } catch (error) {
+        console.error('Error while fetching data:', error)
+        setIsLoading(false) // Kết thúc loading sau 2 giây
+      }
+    }, 1400)
   }
 
   useEffect(() => {
     setIdVideo(JSONVideoId)
+    window.scrollTo(0, 0)
   }, [id])
 
   const handleClickTitle = (index) => {
     setCount(index)
     setTitle(tags[index].title)
+    setIsFirstRender(true)
+    window.scrollTo(0, 0)
   }
   useEffect(() => {
     document.title = JSONVideoInfo.titleVideo // Thay đổi tiêu đề của trang khi component được render
@@ -141,11 +199,10 @@ function Watch() {
 
   useEffect(() => {
     getApi()
-  }, [title])
+  }, [title, limit, offset])
 
   const checkStatusSubscribe = async (uid) => {
     const channleId = JSON.parse(localStorage.getItem('itemInfo')).channelId
-    console.log(channleId)
     try {
       const result = await axios.get(
         `http://localhost:4000/user/subscribed/${uid}/${channleId}`,
@@ -216,6 +273,7 @@ function Watch() {
       setUnLike(true)
     }
   }
+
   return (
     // pt-80px
     <div
@@ -483,7 +541,14 @@ function Watch() {
             </div>
           </div>
         </div>
-        <div className={cx('item', 'item3', 'md:px-1', isPlayer1Visible && 'mt-[30px]')}>
+        <div
+          className={cx(
+            'item',
+            'item3',
+            'md:px-1 mb-[70px] md:mb-[10px]',
+            isPlayer1Visible && 'mt-[30px]',
+          )}
+        >
           <div
             className={cx(
               'tagsWatch',
@@ -519,15 +584,39 @@ function Watch() {
             ))} */}
             {apiTitle
               .filter((item, index) => item.videoId !== id)
-              .map((item, index) => (
-                <VideoItem
-                  key={`videoItem-${index}`}
-                  item={item}
-                  index={index}
-                  small={true}
-                  data={data}
-                />
-              ))}
+              .map((item, index) => {
+                if (apiTitle.length === index + 1) {
+                  return (
+                    <VideoItem
+                      ref={lastBookElementRef}
+                      key={`videoItem-${index}`}
+                      item={item}
+                      index={index}
+                      small={true}
+                      data={data}
+                    />
+                  )
+                } else {
+                  return (
+                    <VideoItem
+                      small={true}
+                      data={data}
+                      key={`videoItem-${index}`}
+                      item={item}
+                      index={index}
+                    />
+                  )
+                }
+              })}
+            {isLoading && (
+              <div className='listItem w-full flex flex-wrap gap-4 md:justify-center'>
+                {Array(ITEMS_PER_PAGE)
+                  .fill()
+                  .map((item, index) => (
+                    <SkeletonLoad search={true} key={`skeleton-home-${index}`} />
+                  ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

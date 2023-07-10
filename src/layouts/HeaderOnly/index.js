@@ -558,42 +558,42 @@ function HeaderOnly({ children }) {
                   to={'/'}
                 ></ItemSideBar>
               </div>
-              <div
-              className='pt-2 mb-[50px]'
-            >
-              <ItemSideBar
-                onclick={() => handleToggleMenu()}
-                noActive={false}
-                title='Cài đặt'
-                icon={<SettingsOutlinedIcon className='h-[24px] w-[24px] mr-[24px]' />}
-                to={'/'}
-                activeIcon={<SettingsIcon className='h-[24px] w-[24px] mr-[24px]' />}
-              ></ItemSideBar>
-              <ItemSideBar
-                onclick={() => handleToggleMenu()}
-                noActive={false}
-                title='Nhật ký báo cáo'
-                icon={<FlagOutlinedIcon className='h-[24px] w-[24px] mr-[24px]' />}
-                to={'/'}
-                activeIcon={<FlagIcon className='h-[24px] w-[24px] mr-[24px]' />}
-              ></ItemSideBar>
-              <ItemSideBar
-                onclick={() => handleToggleMenu()}
-                noActive={false}
-                title='Trợ giúp'
-                icon={<HelpOutlineOutlinedIcon className='h-[24px] w-[24px] mr-[24px]' />}
-                to={'/'}
-                activeIcon={<HelpIcon className='h-[24px] w-[24px] mr-[24px]' />}
-              ></ItemSideBar>
-              <ItemSideBar
-                onclick={() => handleToggleMenu()}
-                noActive={false}
-                title='Gửi ý kiến phản hồi'
-                icon={<FeedbackOutlinedIcon className='h-[24px] w-[24px] mr-[24px]' />}
-                to={'/'}
-                activeIcon={<FeedbackIcon className='h-[24px] w-[24px] mr-[24px]' />}
-              ></ItemSideBar>
-            </div>
+              <div className='pt-2 mb-[50px]'>
+                <ItemSideBar
+                  onclick={() => handleToggleMenu()}
+                  noActive={false}
+                  title='Cài đặt'
+                  icon={<SettingsOutlinedIcon className='h-[24px] w-[24px] mr-[24px]' />}
+                  to={'/'}
+                  activeIcon={<SettingsIcon className='h-[24px] w-[24px] mr-[24px]' />}
+                ></ItemSideBar>
+                <ItemSideBar
+                  onclick={() => handleToggleMenu()}
+                  noActive={false}
+                  title='Nhật ký báo cáo'
+                  icon={<FlagOutlinedIcon className='h-[24px] w-[24px] mr-[24px]' />}
+                  to={'/'}
+                  activeIcon={<FlagIcon className='h-[24px] w-[24px] mr-[24px]' />}
+                ></ItemSideBar>
+                <ItemSideBar
+                  onclick={() => handleToggleMenu()}
+                  noActive={false}
+                  title='Trợ giúp'
+                  icon={
+                    <HelpOutlineOutlinedIcon className='h-[24px] w-[24px] mr-[24px]' />
+                  }
+                  to={'/'}
+                  activeIcon={<HelpIcon className='h-[24px] w-[24px] mr-[24px]' />}
+                ></ItemSideBar>
+                <ItemSideBar
+                  onclick={() => handleToggleMenu()}
+                  noActive={false}
+                  title='Gửi ý kiến phản hồi'
+                  icon={<FeedbackOutlinedIcon className='h-[24px] w-[24px] mr-[24px]' />}
+                  to={'/'}
+                  activeIcon={<FeedbackIcon className='h-[24px] w-[24px] mr-[24px]' />}
+                ></ItemSideBar>
+              </div>
             </div>
           </div>
           {toggleMenu && (
