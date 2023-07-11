@@ -51,7 +51,7 @@ function Library() {
     )
 
     if (loggedInUser) {
-      const result = await axios.post('http://localhost:4000/user/listSeen', {
+      const result = await axios.post(`${urlServer}/user/listSeen`, {
         uid: loggedInUser.uid,
         data: {
           urlAva: item.urlAva,
@@ -92,7 +92,7 @@ function Library() {
     )
 
     if (loggedInUser) {
-      const result = await axios.post('http://localhost:4000/user/listSeen', {
+      const result = await axios.post(`${urlServer}/user/listSeen`, {
         uid: loggedInUser.uid,
         data: {
           urlAva: item.urlChannel,

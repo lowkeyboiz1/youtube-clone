@@ -99,7 +99,7 @@ function DetailChannle() {
 
       const localUserInfo = JSON.parse(localStorage.getItem('userInfo'))
       if (localUserInfo) {
-        const result = await axios.post('http://localhost:4000/user/subscribe', {
+        const result = await axios.post(`${urlServer}/user/subscribe`, {
           uid: localUserInfo.uid,
           channleId: id,
           itemChannle: dataVideoChannle[0],

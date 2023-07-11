@@ -10,6 +10,7 @@ import { calculatorTime } from '../../util/calculatorTime'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '../../config/firebase'
 import axios from 'axios'
+import { urlServer } from '../../urlServer'
 
 const cx = classnames.bind(styles)
 
@@ -39,7 +40,7 @@ const VideoItem = forwardRef(
       )
 
       if (loggedInUser) {
-        const result = await axios.post('http://localhost:4000/user/listSeen', {
+        const result = await axios.post(`${urlServer}/user/listSeen`, {
           uid: loggedInUser.uid,
           data: {
             urlAva: item.urlChannel,

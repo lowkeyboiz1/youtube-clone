@@ -20,7 +20,10 @@ function MenuHeader({ className }) {
       {/* logo */}
       <div
         className='logo h-5 w-[90px] relative ml-1 md:ml-[1px]'
-        onClick={() => setSelect(localStorage.setItem('selectSidebar', 0))}
+        onClick={() => {
+          window.scrollTo(0, 0)
+          setSelect(localStorage.setItem('selectSidebar', 0))
+        }}
       >
         <Link to={'/'} onClick={() => dispatch(toggle(true))}>
           <Logo className='w-[120px] h-full text-white cursor-pointer' />

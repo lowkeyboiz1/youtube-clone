@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import styles from './SeeLater.module.scss'
 import classNames from 'classnames/bind'
 import { calculatorTime } from '../../util/calculatorTime'
+import { urlServer } from '../../urlServer'
 
 const cx = classNames.bind(styles)
 
@@ -37,7 +38,7 @@ function SeeLater() {
     )
 
     if (loggedInUser) {
-      const result = await axios.post('http://localhost:4000/user/listSeen', {
+      const result = await axios.post(`${urlServer}/user/listSeen`, {
         uid: loggedInUser.uid,
         data: {
           urlAva: item.urlAva,
@@ -58,7 +59,12 @@ function SeeLater() {
     navigate(`/Watch/${item.videoId}`)
   }
   return (
-    <div className={cx('seelater','flex flex-1 w-full overflow-x-scroll md:flex-wrap mt-2 md:mt-0 md:px-10 md:pr-3')}>
+    <div
+      className={cx(
+        'seelater',
+        'flex flex-1 w-full overflow-x-scroll md:flex-wrap mt-2 md:mt-0 md:px-10 md:pr-3',
+      )}
+    >
       {listSeenState && listSeenState.length > 0 ? (
         listSeenState.map((item, index) => (
           <div
@@ -96,9 +102,7 @@ function SeeLater() {
             </div>
             <div className='text-[11px] text-[#AAAAAA] hidden md:flex items-center'>
               <div className='view'>{item ? item.view : ''} lượt xem</div>
-              <div className={cx('time-upload')}>
-                {item ? item.publicAt : ''} trước
-              </div>
+              <div className={cx('time-upload')}>{item ? item.publicAt : ''} trước</div>
             </div>
           </div>
         ))

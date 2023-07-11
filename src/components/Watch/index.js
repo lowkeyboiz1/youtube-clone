@@ -253,7 +253,7 @@ function Watch() {
   const handleSubscribedUI = async () => {
     const localUserInfo = JSON.parse(localStorage.getItem('userInfo'))
     if (localUserInfo) {
-      const result = await axios.post('http://localhost:4000/user/subscribe', {
+      const result = await axios.post(`${urlServer}/user/subscribe`, {
         uid: localUserInfo.uid,
         channleId: infoVideo.channelId,
         itemChannle: {
@@ -279,7 +279,7 @@ function Watch() {
 
   const actionWithApi = async (action) => {
     if (loginState) {
-      const result = await axios.post('http://localhost:4000/user/action', {
+      const result = await axios.post(`${urlServer}/user/action`, {
         uid: loggedInUser.uid,
         videoId: id,
         itemLike: {

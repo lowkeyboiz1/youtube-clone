@@ -32,6 +32,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { listSeen } from '../../redux/actions/listSeen'
 import { loginStatus } from '../../redux/actions/loginStatus'
 import { likeVideo } from '../../redux/actions/likeVideo'
+import { urlServer } from '../../urlServer'
 
 const cx = classNames.bind(styles)
 
@@ -46,7 +47,7 @@ function Header() {
 
   const checkUserLogin = async () => {
     if (loggedInUser) {
-      const resultUser = await axios.post('http://localhost:4000/auth/users', {
+      const resultUser = await axios.post(`${urlServer}/auth/users`, {
         uid: loggedInUser.uid,
       })
       localStorage.setItem('userInfo', JSON.stringify(resultUser.data.user))
