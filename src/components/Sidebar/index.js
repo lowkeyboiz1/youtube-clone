@@ -38,6 +38,7 @@ import { auth } from '../../config/firebase'
 import Button from '../Button'
 import { useNavigate } from 'react-router-dom'
 import { listSeen } from '../../redux/actions/listSeen'
+import { urlServer } from '../../urlServer'
 
 const cx = classNames.bind(styles)
 
@@ -132,7 +133,7 @@ function Sidebar() {
   }, [url])
 
   const getChannleSubscribe = async (uid) => {
-    const result = await axios.get(`http://localhost:4000/user/subscriptions/${uid}`)
+    const result = await axios.get(`${urlServer}/user/subscriptions/${uid}`)
     setChannleSubscribe(result.data.subscriptions)
   }
 
@@ -262,9 +263,11 @@ function Sidebar() {
                               className='channle-sub flex px-4 py-2 hover:rounded-[12px] hover:bg-[#272727] cursor-pointer'
                             >
                               <div className='h-[24px] w-[24px] rounded-full overflow-hidden mr-6 flex-shrink-0'>
-                                Image className='object-cover h-full w-full' src=
-                                {item.itemChannle.urlChannel}
-                                alt='' />
+                                <img
+                                  className='object-cover h-full w-full'
+                                  src={item.itemChannle.urlChannel}
+                                  alt=''
+                                />
                               </div>
                               <div className='title-channle ml-[-4px] overflow-hidden line-clamp-1 max-w-[120px] text-[14px]'>
                                 {item.itemChannle.channelTitle}

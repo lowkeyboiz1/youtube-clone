@@ -3,7 +3,7 @@ import styles from './DetailChannle.module.scss'
 import VideoItem from '../../components/VideoItem'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
-import { useEffect, useRefhandleLogin, useState } from 'react'
+import { useEffect, useState } from 'react'
 import SkeletonLoad from '../../components/SkeletonLoad'
 import Snackbar from '@mui/material/Snackbar'
 import IconButton from '@mui/material/IconButton'
@@ -13,6 +13,7 @@ import { auth } from '../../config/firebase'
 import { useSelector } from 'react-redux'
 
 import Login from '../../components/Login'
+import { urlServer } from '../../urlServer'
 
 const cx = classNames.bind(styles)
 
@@ -39,8 +40,6 @@ function DetailChannle() {
 
   const loginState = useSelector((state) => state.loginStatusReducer)
 
-  const listSeenState = useSelector((state) => state.listSeenReducer)
-
   const [subscribed, setSubscribed] = useState(false)
   const [loggedInUser] = useAuthState(auth)
   const handleClose = (event, reason) => {
@@ -60,7 +59,7 @@ function DetailChannle() {
 
   const getVideoInfoFromDb = async () => {
     try {
-      const result = await axios.get(`http://localhost:4000/detailChannle/${id}`)
+      const result = await axios.get(`${urlServer}/detailChannle/${id}`)
       setDataVideoChannle(result.data.videos)
     } catch (error) {
       console.error('Error fetching video info:', error)
@@ -69,8 +68,8 @@ function DetailChannle() {
 
   const checkStatusSubscribe = async (uid) => {
     try {
-      const result = await axios.get(`http://localhost:4000/user/subscribed/${uid}/${id}`)
-      console.log(result.data)
+      const result = await axios.get(`${urlServer}/user/subscribed/${uid}/${id}`)
+
       setSubscribed(result.data.isSubscribed)
     } catch (error) {
       console.error('Error fetching video info:', error)
@@ -102,12 +101,8 @@ function DetailChannle() {
         const result = await axios.post('http://localhost:4000/user/subscribe', {
           uid: localUserInfo.uid,
           channleId: id,
-          itemChannle: {
-            ...dataVideoChannle[0],
-          },
+          itemChannle: dataVideoChannle[0],
         })
-
-        console.log(result)
       }
     } else {
     }
@@ -144,6 +139,7 @@ function DetailChannle() {
               <div className=' w-[128px] h-[128px] bg-[#fff3] animate-pulse'></div>
             )}
           </div>
+
           {dataVideoChannle ? (
             <div className='info-channle-detail flex flex-col justify-center md:ml-[24px]'>
               <div className='name-channle text-[18px] mt-2 md:mt-0 md:text-[24px] font-medium'>

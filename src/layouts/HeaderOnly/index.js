@@ -39,6 +39,7 @@ import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined'
 import HelpIcon from '@mui/icons-material/Help'
 import FeedbackOutlinedIcon from '@mui/icons-material/FeedbackOutlined'
 import FeedbackIcon from '@mui/icons-material/Feedback'
+import { urlServer } from '../../urlServer'
 
 const cx = classNames.bind(styles)
 
@@ -133,7 +134,7 @@ function HeaderOnly({ children }) {
   }, [url])
 
   const getChannleSubscribe = async (uid) => {
-    const result = await axios.get(`http://localhost:4000/user/subscriptions/${uid}`)
+    const result = await axios.get(`${urlServer}/user/subscriptions/${uid}`)
     setChannleSubscribe(result.data.subscriptions)
   }
 

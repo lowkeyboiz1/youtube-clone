@@ -9,11 +9,11 @@ import { useAuthState, useSignInWithGoogle } from 'react-firebase-hooks/auth'
 import Button from '../../components/Button'
 import axios from 'axios'
 import { useSelector } from 'react-redux'
+import { urlServer } from '../../urlServer'
 
 function RegisterChanel() {
   //register is dataform mongodb user subscriber
   const [loggedInUser] = useAuthState(auth)
-  const [videosData, setVideosData] = useState([])
 
   const [channles, setChannles] = useState([])
 
@@ -21,28 +21,12 @@ function RegisterChanel() {
   const handleLogin = () => {
     signInWithGoogle()
   }
-  const getDataFromFirebase = async () => {
-    const docRef = doc(db, 'category', 'Tất cả')
-    const docSnap = await getDoc(docRef)
 
-    if (docSnap.exists()) {
-      const data = docSnap.data()
-      setVideosData(data.items)
-    } else {
-      // docSnap.data() will be undefined in this case
-      console.log('No such document!')
-    }
-  }
-  // const arr = []
-
-  useEffect(() => {
-    getDataFromFirebase()
-  }, [])
   const loginState = useSelector((state) => state.loginStatusReducer)
 
   const getChannlesHaveSubscribed = async (uid) => {
-    const result = await axios.get(`http://localhost:4000/user/subscriptions/${uid}`)
-    console.log(result.data)
+    const result = await axios.get(`${urlServer}/user/subscriptions/${uid}`)
+
     setChannles(result.data.subscriptions)
   }
 
@@ -94,11 +78,11 @@ function RegisterChanel() {
                   </Tippy>
                 </div>
               </div>
-              <div className='flex flex-col md:flex-row items-center md:items-start justify-center flex-wrap md:gap-4'>
+              <div className='flex flex-col md:flex-row items-center md:items-start justify-center flex-wrap md:gap-4 mb-[60px]'>
                 {channles && channles.length > 0 ? (
                   channles.map((item, index) => (
                     <VideoItem
-                      key={`videoItem-${index}`}
+                      key={`videoItemRegister-${item.itemChannle.videoId || index}`}
                       item={item.itemChannle}
                       index={index}
                     />
@@ -108,7 +92,7 @@ function RegisterChanel() {
                     {Array(9)
                       .fill()
                       .map((item, index) => (
-                        <SkeletonLoad key={`skeleton-home-${index}`} />
+                        <SkeletonLoad key={`skeleton-ItemRegister-${index}`} />
                       ))}
                   </div>
                 )}

@@ -7,6 +7,8 @@ import Watch from '../components/Watch'
 import HeaderOnly from '../layouts/HeaderOnly'
 import Channels from '../pages/Channels'
 import DetailChannle from '../pages/DetailChannle'
+import Liked from '../pages/Liked'
+import SeeLater from '../pages/SeeLater'
 
 const publicRoutes = [
   { path: '/', component: Home },
@@ -15,6 +17,8 @@ const publicRoutes = [
   { path: '/Library', component: Library },
   { path: '/Shorts', component: Shorts },
   { path: '/Channels', component: Channels },
+  { path: '/Liked', component: Liked },
+  { path: '/SeeLater', component: SeeLater },
   { path: '/Search/:key', component: Search },
   { path: '/DetailChannle/:id', component: DetailChannle },
   { path: '/Watch/:id', component: Watch, layout: HeaderOnly },

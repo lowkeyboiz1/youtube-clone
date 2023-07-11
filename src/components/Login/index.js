@@ -4,7 +4,7 @@ import Button from '../Button'
 import { useSignInWithGoogle } from 'react-firebase-hooks/auth'
 import { auth } from '../../config/firebase'
 
-function Login({ children }) {
+function Login({ children, title }) {
   const [openModalLogin, setOpenModalLogin] = useState(false)
 
   const [signInWithGoogle] = useSignInWithGoogle(auth)
@@ -32,8 +32,12 @@ function Login({ children }) {
           tabIndex='-1'
           {...attrs}
         >
-          <div className='text-[16px] mb-[10px]'>Bạn muốn đăng ký kênh này?</div>
-          <div className='text-[14px] text-[#AAA]'>Đăng nhập để đăng ký kênh này.</div>
+          <div className='text-[16px] mb-[10px]'>
+            Bạn muốn {title ? title : 'đăng ký'} kênh này?
+          </div>
+          <div className='text-[14px] text-[#AAA]'>
+            Đăng nhập để {title ? title : 'đăng ký'} kênh này.
+          </div>
 
           <Button
             onClick={handleLogin}

@@ -15,7 +15,7 @@ import Menu from '../Menu'
 import 'tippy.js/dist/tippy.css' // optional
 import Tippy from '@tippyjs/react/headless'
 import MenuHeader from '../MenuHeader'
-import { Link, useParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { useAuthState, useSignInWithGoogle } from 'react-firebase-hooks/auth'
@@ -31,6 +31,7 @@ import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
 import { listSeen } from '../../redux/actions/listSeen'
 import { loginStatus } from '../../redux/actions/loginStatus'
+import { likeVideo } from '../../redux/actions/likeVideo'
 
 const cx = classNames.bind(styles)
 
@@ -50,7 +51,11 @@ function Header() {
       })
       localStorage.setItem('userInfo', JSON.stringify(resultUser.data.user))
       localStorage.setItem('listSeen', JSON.stringify(resultUser.data.user.listSeen))
+
+      dispatch(likeVideo(resultUser.data.user.liked))
+
       dispatch(listSeen(resultUser.data.user.listSeen))
+
       dispatch(loginStatus(!!loggedInUser))
     }
   }
@@ -104,7 +109,7 @@ function Header() {
   }
 
   const handleOpen = () => {
-    setOpenUserControl(true)
+    setOpenUserControl(!openUserControl)
   }
   const handleClose = () => {
     setOpenUserControl(false)
@@ -144,7 +149,7 @@ function Header() {
           </div>
         )}
         <Menu content='Tìm kiếm bằng giọng nói'>
-          <div className='h-[36px] w-[36px] bg-[#161616] rounded-none md:rounded-full flex-shrink-0'>
+          <div className='h-[36px] w-[36px] bg-[#161616] rounded-none md:rounded-full flex-shrink-0 pr-1 md:mr-0'>
             <ItemIconHeader className='rounded-none'>
               <VoiceIcon className='h-[24px] w-[24px] text-white' />
             </ItemIconHeader>

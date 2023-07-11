@@ -2,11 +2,12 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import classnames from 'classnames/bind'
 import styles from './Home.module.scss'
 import VideoItem from '../../components/VideoItem'
-import { auth, db } from '../../config/firebase'
+import { auth } from '../../config/firebase'
 import Footer from '../../components/Footer'
 import SkeletonLoad from '../../components/SkeletonLoad'
 import axios from 'axios'
 import { useAuthState } from 'react-firebase-hooks/auth'
+import { urlServer } from '../../urlServer'
 
 const cx = classnames.bind(styles)
 
@@ -74,9 +75,8 @@ function Home() {
       }
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore) {
-          console.log('visible')
           setIsLoading(true)
-          setLimit((prevLimit) => prevLimit + ITEMS_PER_PAGE)
+          // setLimit((prevLimit) => prevLimit + ITEMS_PER_PAGE)
           setOffset((prevOffset) => prevOffset + ITEMS_PER_PAGE)
         }
       })
@@ -102,10 +102,11 @@ function Home() {
     setTimeout(async () => {
       try {
         const result = await axios.get(
-          `http://localhost:4000/?category=${title}&limit=${
-            isFirstRender ? 9 : limit
-          }&offset=${isFirstRender ? 0 : offset}`,
+          `${urlServer}/?category=${title}&limit=${limit}&offset=${
+            isFirstRender ? 0 : offset
+          }`,
         )
+
         setHasMore(result.data.videos.length > 0)
 
         isFirstRender
@@ -155,7 +156,7 @@ function Home() {
         </div>
       </div>
       <div className='mt-[12px]'>
-        <div className='flex flex-col md:flex-row items-center md:items-start justify-center flex-wrap md:gap-4 mt-[60px] mb-[30px]'>
+        <div className='flex flex-col md:flex-row items-center md:items-start justify-center flex-wrap md:gap-4 mt-[60px] mb-[70px]'>
           {apiTitle && apiTitle.length > 0 ? (
             <>
               {apiTitle.map((item, index) => {

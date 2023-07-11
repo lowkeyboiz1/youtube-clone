@@ -59,9 +59,7 @@ function ShortsVideoItem({
     }
   }, [JSON.parse(localStorage.getItem('title'))])
 
-  const handleSubscribe = () => {
-    console.log(urlVideo, titleVideo, titleChannle, urlChannleImg, like, comment)
-  }
+  const handleSubscribe = () => {}
 
   return (
     <div

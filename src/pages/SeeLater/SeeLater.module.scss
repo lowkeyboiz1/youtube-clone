@@ -1,0 +1,25 @@
+.time-upload::before {
+  content: '•';
+  margin: 0 4px;
+}
+
+/* width */
+.seelater::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+/* Track */
+.seelater::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+.seelater::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+/* Handle on hover */
+.seelater::-webkit-scrollbar-thumb:hover {
+  background: transparent;
+}

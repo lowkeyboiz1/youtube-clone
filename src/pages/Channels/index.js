@@ -1,14 +1,22 @@
 import Tippy from '@tippyjs/react'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { urlServer } from '../../urlServer'
 
 function Channels() {
   const [channles, setChannles] = useState([])
   const [subscribeStatus, setSubscribeStatus] = useState(true)
 
+  const navigate = useNavigate()
+
+  const navigateChannleDetail = (item) => {
+    const channleId = item.channleId
+    navigate(`/DetailChannle/${channleId}`)
+  }
+
   const getChannlesHaveSubscribed = async (uid) => {
-    const result = await axios.get(`http://localhost:4000/user/subscriptions/${uid}`)
-    console.log(result.data.subscriptions)
+    const result = await axios.get(`${urlServer}/user/subscriptions/${uid}`)
     setChannles(result.data.subscriptions)
   }
   const handleSubscribe = async (item) => {
@@ -45,20 +53,26 @@ function Channels() {
                 key={index}
                 className='item ml-2 md:ml-0 flex items-center md:justify-center mt-[16px] xs:px-[20px] md:px-0'
               >
-                <div className='w-[40px] xs:w-[100px] md:w-[280px] lg:w-[360px] flex justify-center flex-shrink-0'>
+                <div
+                  onClick={() => navigateChannleDetail(item)}
+                  className='w-[40px] cursor-pointer xs:w-[100px] md:w-[280px] lg:w-[360px] flex justify-center flex-shrink-0'
+                >
                   <div className='img-channle w-[40px] h-[40px] xs:w-[100px] xs:h-[100px] md:w-[126px] md:h-[126px] rounded-full overflow-hidden'>
-                    Image className='h-full w-full object-cover' src=
-                    {item.itemChannle.urlChannel}
-                    alt='' />
+                    <img
+                      className='h-full w-full object-cover'
+                      src={item ? item.itemChannle.urlChannel : ''}
+                      alt=''
+                    />
                   </div>
-
-                  {console.log(item)}
                 </div>
-                <div className='info-channle w-[50%] lg:w-[48%] ml-2 xs:ml-4 md:ml-0'>
+                <div
+                  onClick={() => navigateChannleDetail(item)}
+                  className='info-channle cursor-pointer w-[50%] lg:w-[48%] ml-2 xs:ml-4 md:ml-0'
+                >
                   <div className='fullname-channle flex items-center'>
-                    <Tippy content={item.itemChannle.channelTitle}>
+                    <Tippy content={item ? item.itemChannle.channelTitle : ''}>
                       <div className='name text-[14px] xs:text-[16px] md:text-[18px]'>
-                        {item.itemChannle.channelTitle}
+                        {item ? item.itemChannle.channelTitle : ''}
                       </div>
                     </Tippy>
                     <div className='check'>
@@ -76,12 +90,12 @@ function Channels() {
                   </div>
                   <div className='infoView items-center text-[#aaa] text-[12px] hidden xs:flex'>
                     <div className='subscriber'>
-                      {item.itemChannle.subscriber} người đăng ký
+                      {item ? item.itemChannle.subscriber : ''} người đăng ký
                     </div>
                   </div>
                   <div className='hidden xs:block'>
                     <div className='desc text-[#aaa] text-[12px] line-clamp-2 overflow-hidden'>
-                      {item.itemChannle.description}
+                      {item ? item.itemChannle.description : ''}
                     </div>
                   </div>
                 </div>

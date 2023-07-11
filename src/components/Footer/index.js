@@ -10,7 +10,6 @@ import {
   ShortIconActive,
 } from "../../assets/Icon";
 import ItemNav from "../Sidebar/ItemNav";
-import { useLocation, useParams } from "react-router-dom";
 
 const a = "dsadsadsa";
 function Footer() {

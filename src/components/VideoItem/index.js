@@ -17,7 +17,6 @@ const VideoItem = forwardRef(
   ({ item, urlChannleImg, index, small, data, lib, search }, ref) => {
     const [loggedInUser] = useAuthState(auth)
     const navigate = useNavigate()
-
     const handleNavigate = async () => {
       localStorage.setItem('idVideo', JSON.stringify(item.videoId))
       localStorage.setItem(
@@ -29,39 +28,15 @@ const VideoItem = forwardRef(
           titleVideo: item.VideoTitle,
           titleChannle: item.channelTitle,
           channelId: item.channelId,
-          publicAt: calculatorTime(item.publishTime),
+          publicAt: item.publishTime,
           urlThumbnail: item.urlThumbnail,
           view: item.view,
           like: item.like,
           subscriber: item.subscriber,
+          description: item.description,
         }),
       )
 
-      // const newVideo = {
-      //   idVideo: item.videoId,
-      //   urlAva: item.urlChannel,
-      //   urlVideo: item.urlThumbnail,
-      //   titleVideo: item.VideoTitle,
-      //   titleChannle: item.channelTitle,
-      //   publicAt: calculatorTime(item.publishTime),
-      //   view: item.view,
-      //   like: item.like,
-      //   subscriber: item.subscriber,
-      //   channelId: item.channelId,
-      //   urlThumbnail: item.urlThumbnail,
-      //   videoId: item.videoId,
-      // }
-
-      // const updatedList = [newVideo, ...listVideoSeen]
-      // const uniqueList = Array.from(new Set(updatedList.map((video) => video.idVideo))).map(
-      //   (idVideo) => updatedList.find((video) => video.idVideo === idVideo),
-      // )
-      // // Đưa phần tử bị trùng lên đầu mảng
-      // const updatedUniqueList = uniqueList.sort((a, b) => {
-      //   if (a.idVideo === newVideo.idVideo) return -1
-      //   if (b.idVideo === newVideo.idVideo) return 1
-      //   return 0
-      // })
 
       if (loggedInUser) {
         const result = await axios.post('http://localhost:4000/user/listSeen', {
@@ -70,7 +45,7 @@ const VideoItem = forwardRef(
             urlAva: item.urlChannel,
             titleVideo: item.VideoTitle,
             titleChannle: item.channelTitle,
-            publicAt: calculatorTime(item.publishTime),
+            publicAt: item.publishTime,
             view: item.view,
             like: item.like,
             subscriber: item.subscriber,
@@ -82,7 +57,7 @@ const VideoItem = forwardRef(
         })
       }
 
-      navigate(`/Watch/${JSON.parse(localStorage.getItem('idVideo'))}`)
+      navigate(`/Watch/${item.videoId}`)
     }
 
     const handleNavigateChannle = (e) => {
@@ -117,24 +92,28 @@ const VideoItem = forwardRef(
               small && ' md:!min-w-[170px] md:!max-h-[100px]'
             }`}
           >
-            <img src={item.urlThumbnail} alt='' className='!w-full !h-full object-fill' />
+            <img
+              src={item ? item.urlThumbnail : ''}
+              alt=''
+              className='!w-full !h-full object-fill'
+            />
           </div>
         </div>
 
         <div
-          className={`flex gap-3 mt-2 md:mt-3 px-[12px]  ${
+          className={`flex gap-3 mt-2 md:mt-3 px-[12px] ${
             small && '!mt-1 items-center md:items-start flex-shrink-0 md:max-w-[74%]'
           } ${search && 'md:!mt-0 px-[14px] py-[10px]'}`}
         >
           {!small && (
             <div
-              className={`ava flex w-[36px] h-[36px] flex-shrink-0${
-                search && 'md:hidden'
+              className={`ava flex w-[36px] h-[36px] flex-shrink-0 ${
+                search && 'lg:hidden'
               }`}
             >
               <img
                 onClick={(e) => handleNavigateChannle(e)}
-                src={item.urlChannel}
+                src={item ? item.urlChannel : ''}
                 alt=''
                 className='h-full w-full rounded-full'
               />
@@ -162,7 +141,7 @@ const VideoItem = forwardRef(
                 <div className='w-[24px] h-[24px] mr-2 hidden md:block'>
                   <img
                     onClick={(e) => handleNavigateChannle(e)}
-                    src={item.urlChannel}
+                    src={item ? item.urlChannel : ''}
                     alt=''
                     className='h-full w-full rounded-full'
                   />
@@ -201,14 +180,14 @@ const VideoItem = forwardRef(
                 search && 'lg:order-1 md:text-[12px]'
               }`}
             >
-              <div className='view'>{item.view} lượt xem</div>
+              <div className='view'>{item ? item.view : ''} lượt xem</div>
               <div className={cx('time-upload')}>
-                {calculatorTime(item.publishTime)} trước
+                {item ? calculatorTime(item.publishTime) + ' trước' : ' '}
               </div>
             </div>
             {search && (
               <div className='description text-[14px] md:text-[12px] lg:order-3 hidden md:block'>
-                {item.description}
+                {item ? item.description : ''}
               </div>
             )}
           </div>

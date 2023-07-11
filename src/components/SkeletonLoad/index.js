@@ -1,9 +1,9 @@
-function SkeletonLoad({ search }) {
+function SkeletonLoad({ search, watch }) {
   return (
     <div
       className={`item w-full mt-[20px] md:w-[40%] lg:w-[30%] ${
         search && 'md:!w-full md:flex'
-      }`}
+      } ${watch && 'md:!w-full lg:!w-full !mt-[-10px] !mb-[10px]'}`}
     >
       <div
         className={`img w-full min-h-[200px] bg-[#fff3] rounded-[12px] animate-pulse overflow-hidden ${

@@ -3,10 +3,12 @@ import { auth } from '../../config/firebase'
 import { useEffect, useState } from 'react'
 import classNames from 'classnames/bind'
 import styles from './Library.module.scss'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import Button from '../../components/Button'
 import { useSelector } from 'react-redux'
+import { calculatorTime } from '../../util/calculatorTime'
+import { urlServer } from '../../urlServer'
 const cx = classNames.bind(styles)
 
 function Library() {
@@ -14,6 +16,7 @@ function Library() {
   const [signInWithGoogle] = useSignInWithGoogle(auth)
 
   const listSeenState = useSelector((state) => state.listSeenReducer)
+  const likeVideoState = useSelector((state) => state.likeVideoReducer)
 
   const handleLogin = async () => {
     await signInWithGoogle()
@@ -29,6 +32,7 @@ function Library() {
   const navigate = useNavigate()
 
   const handleWatch = async (item) => {
+    console.log(item)
     localStorage.setItem('idVideo', JSON.stringify(item.videoId))
     localStorage.setItem(
       'itemInfo',
@@ -47,7 +51,6 @@ function Library() {
       }),
     )
 
-    console.log(item)
     if (loggedInUser) {
       const result = await axios.post('http://localhost:4000/user/listSeen', {
         uid: loggedInUser.uid,
@@ -66,9 +69,51 @@ function Library() {
         },
       })
     }
-    navigate(`/Watch/${JSON.parse(localStorage.getItem('idVideo'))}`)
+
+    navigate(`/Watch/${item.videoId}`)
   }
 
+  const handleWatch2 = async (item) => {
+    console.log(item)
+    localStorage.setItem('idVideo', JSON.stringify(item.videoId))
+    localStorage.setItem(
+      'itemInfo',
+      JSON.stringify({
+        idVideo: item.videoId,
+        urlAva: item.urlChannel,
+        urlVideo: item.urlVideo,
+        titleVideo: item.VideoTitle,
+        titleChannle: item.channelTitle,
+        channelId: item.channelId,
+        publicAt: item.publishTime,
+        urlThumbnail: item.urlThumbnail,
+        view: item.view,
+        like: item.like,
+        subscriber: item.subscriber,
+      }),
+    )
+
+    if (loggedInUser) {
+      const result = await axios.post('http://localhost:4000/user/listSeen', {
+        uid: loggedInUser.uid,
+        data: {
+          urlAva: item.urlChannel,
+          titleVideo: item.VideoTitle,
+          titleChannle: item.channelTitle,
+          publicAt: item.publishTime,
+          view: item.view,
+          like: item.like,
+          subscriber: item.subscriber,
+          channelId: item.channelId,
+          urlThumbnail: item.urlThumbnail,
+          videoId: item.videoId,
+          description: item.description,
+        },
+      })
+    }
+
+    navigate(`/Watch/${item.videoId}`)
+  }
   return (
     <div
       className={cx(
@@ -78,79 +123,167 @@ function Library() {
     >
       {loggedInUser ? (
         <>
-          <div className='videoInfo flex-1 overflow-hidden'>
-            <div className='headerInfo w-full flex justify-between md:px-10'>
-              <div className='videoWatched flex'>
-                <div className=''>
-                  <svg
-                    height='24'
-                    viewBox='0 0 24 24'
-                    width='24'
-                    focusable='false'
-                    fill='currentColor'
-                  >
-                    <g>
-                      <path d='M14.97 16.95 10 13.87V7h2v5.76l4.03 2.49-1.06 1.7zM22 12c0 5.51-4.49 10-10 10S2 17.51 2 12h1c0 4.96 4.04 9 9 9s9-4.04 9-9-4.04-9-9-9C8.81 3 5.92 4.64 4.28 7.38c-.11.18-.22.37-.31.56L3.94 8H8v1H1.96V3h1v4.74c.04-.09.07-.17.11-.25.11-.22.23-.42.35-.63C5.22 3.86 8.51 2 12 2c5.51 0 10 4.49 10 10z'></path>
-                    </g>
-                  </svg>
+          <div>
+            <div className='videoInfo flex-1 overflow-hidden'>
+              <div className='headerInfo w-full flex justify-between md:px-10'>
+                <div className='videoWatched flex items-center '>
+                  <div className=''>
+                    <svg
+                      height='24'
+                      viewBox='0 0 24 24'
+                      width='24'
+                      focusable='false'
+                      fill='currentColor'
+                    >
+                      <g>
+                        <path d='M14.97 16.95 10 13.87V7h2v5.76l4.03 2.49-1.06 1.7zM22 12c0 5.51-4.49 10-10 10S2 17.51 2 12h1c0 4.96 4.04 9 9 9s9-4.04 9-9-4.04-9-9-9C8.81 3 5.92 4.64 4.28 7.38c-.11.18-.22.37-.31.56L3.94 8H8v1H1.96V3h1v4.74c.04-.09.07-.17.11-.25.11-.22.23-.42.35-.63C5.22 3.86 8.51 2 12 2c5.51 0 10 4.49 10 10z'></path>
+                      </g>
+                    </svg>
+                  </div>
+                  <div className='text-[16px] ml-4'>Video đã xem</div>
                 </div>
-                <div className='text-[16px] ml-4'>Video đã xem</div>
+                <Link
+                  to={'/seelater'}
+                  className='text-[14px] text-[#3ea6ff] hover:bg-[#1a2737] mr-[-16px] md:mr-[6px] lg:mr-[10px] hover:rounded-[30px] font-semibold cursor-pointer py-[8px] px-[16px]'
+                >
+                  Xem tất cả
+                </Link>
               </div>
-              <div className='text-[14px] text-[#3ea6ff] hover:bg-[#1a2737] mr-[-16px] md:mr-[6px] lg:mr-[10px] hover:rounded-[30px] font-semibold cursor-pointer py-[8px] px-[16px]'>
-                Xem tất cả
+              <div
+                className={cx(
+                  'listVideo',
+                  'listVideo flex flex-1 w-full overflow-x-scroll md:flex-wrap mt-2 md:mt-0 md:px-10 md:pr-3',
+                )}
+              >
+                {listSeenState && listSeenState.length > 0 ? (
+                  listSeenState.map((item, index) => (
+                    <div
+                      onClick={() => handleWatch(item)}
+                      key={`itemVideo-${index}`}
+                      className='itemVideo flex-shrink-0 mr-2 w-[39%] pb-[12px] md:pb-[16px] md:w-[47%] lg:w-[23.5%] mt-[10px] md:mt-[20px] ease-linear duration-100 cursor-pointer hover:bg-[#fff3] hover:md:bg-transparent hover:rounded-t-[8px] hover:overflow-hidden'
+                    >
+                      <div className='imgItemVideo rounded-[8px] overflow-hidden md:border-[1px] md:border-[#1f1f1f]'>
+                        <img
+                          className='w-full max-h-[120px] min-h-[90px] md:min-h-[120px] object-cover'
+                          src={item ? item.urlThumbnail : ''}
+                          alt=''
+                        />
+                      </div>
+                      <div className='titleVideo text-[12px] md:text-[14px] mt-1 overflow-hidden line-clamp-2 xs:line-clamp-1 md:line-clamp-2 '>
+                        {item ? item.titleVideo : ''}
+                      </div>
+                      <div className='titleChannle text-[12px] mt-2 gap-1 text-[#AAAAAA] flex items-center'>
+                        <div className='title overflow-hidden line-clamp-1 '>
+                          {item ? item.titleChannle : ''}
+                        </div>
+                        <div className='check'>
+                          <svg
+                            height='14'
+                            viewBox='0 0 24 24'
+                            width='14'
+                            focusable='false'
+                            fill='currentColor'
+                            className=''
+                          >
+                            <path d='M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zM9.8 17.3l-4.2-4.1L7 11.8l2.8 2.7L17 7.4l1.4 1.4-8.6 8.5z'></path>
+                            <path d='M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zM9.8 17.3l-4.2-4.1L7 11.8l2.8 2.7L17 7.4l1.4 1.4-8.6 8.5z'></path>
+                          </svg>
+                        </div>
+                      </div>
+                      <div className='text-[11px] text-[#AAAAAA] hidden md:flex items-center'>
+                        <div className='view'>{item ? item.view : ''} lượt xem</div>
+                        <div className={cx('time-upload')}>
+                          {item ? calculatorTime(item.publicAt) : ''} trước
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className='text-center mx-auto'>Bạn chưa xem video nào.</div>
+                )}
+                <div className='hidden md:block border-b-[1px] border-[#fff3] mt-[30px] w-full'></div>
               </div>
             </div>
-            <div
-              className={cx(
-                'listVideo',
-                'listVideo flex flex-1 w-full overflow-x-scroll md:flex-wrap mt-2 md:mt-0 md:px-10',
-              )}
-            >
-              {listSeenState && listSeenState.length > 0 ? (
-                listSeenState.map((item, index) => (
-                  <div
-                    onClick={() => handleWatch(item)}
-                    key={`itemVideo-${index}`}
-                    className='itemVideo flex-shrink-0 mr-2 w-[39%] pb-[12px] md:pb-[16px] md:w-[47%] lg:w-[23.5%] mt-[10px] md:mt-[20px] ease-linear duration-100 cursor-pointer hover:bg-[#fff3] hover:md:bg-transparent hover:rounded-t-[8px] hover:overflow-hidden'
-                  >
-                    <div className='imgItemVideo rounded-[8px] overflow-hidden md:border-[1px] md:border-[#1f1f1f]'>
-                      <img
-                        className='w-full max-h-[120px] min-h-[90px] md:min-h-[120px] object-cover'
-                        src={item.urlThumbnail}
-                        alt=''
-                      />
-                    </div>
-                    <div className='titleVideo text-[12px] md:text-[14px] mt-1 overflow-hidden line-clamp-2 xs:line-clamp-1 md:line-clamp-2 '>
-                      {item.titleVideo}
-                    </div>
-                    <div className='titleChannle text-[12px] mt-2 gap-1 text-[#AAAAAA] flex items-center'>
-                      <div className='title overflow-hidden line-clamp-1 '>
-                        {item.titleChannle}
-                      </div>
-                      <div className='check'>
-                        <svg
-                          height='14'
-                          viewBox='0 0 24 24'
-                          width='14'
-                          focusable='false'
-                          fill='currentColor'
-                          className=''
-                        >
-                          <path d='M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zM9.8 17.3l-4.2-4.1L7 11.8l2.8 2.7L17 7.4l1.4 1.4-8.6 8.5z'></path>
-                          <path d='M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zM9.8 17.3l-4.2-4.1L7 11.8l2.8 2.7L17 7.4l1.4 1.4-8.6 8.5z'></path>
-                        </svg>
-                      </div>
-                    </div>
-                    <div className='text-[11px] text-[#AAAAAA] hidden md:flex items-center'>
-                      <div className='view'>{item.view} lượt xem</div>
-                      <div className={cx('time-upload')}>{item.publicAt} trước</div>
-                    </div>
+            <div className='videoInfo flex-1 overflow-hidden mb-[60px]'>
+              <div className='headerInfo w-full flex justify-between md:px-10'>
+                <div className='videoWatched flex items-center'>
+                  <div className=''>
+                    <svg
+                      enableBackground='new 0 0 24 24'
+                      height='24'
+                      viewBox='0 0 24 24'
+                      width='24'
+                      focusable='false'
+                      fill='currentColor'
+                    >
+                      <path d='M18.77,11h-4.23l1.52-4.94C16.38,5.03,15.54,4,14.38,4c-0.58,0-1.14,0.24-1.52,0.65L7,11H3v10h4h1h9.43 c1.06,0,1.98-0.67,2.19-1.61l1.34-6C21.23,12.15,20.18,11,18.77,11z M7,20H4v-8h3V20z M19.98,13.17l-1.34,6 C18.54,19.65,18.03,20,17.43,20H8v-8.61l5.6-6.06C13.79,5.12,14.08,5,14.38,5c0.26,0,0.5,0.11,0.63,0.3 c0.07,0.1,0.15,0.26,0.09,0.47l-1.52,4.94L13.18,12h1.35h4.23c0.41,0,0.8,0.17,1.03,0.46C19.92,12.61,20.05,12.86,19.98,13.17z'></path>
+                    </svg>
                   </div>
-                ))
-              ) : (
-                <div className='text-center mx-auto'>Bạn chưa xem video nào.</div>
-              )}
-              <div className='hidden md:block border-b-[1px] border-[#fff3] mt-[30px] w-full'></div>
+                  <div className='text-[16px] ml-4'>Video đã thích</div>
+                </div>
+                <Link
+                  to={'/liked'}
+                  className='text-[14px] text-[#3ea6ff] hover:bg-[#1a2737] mr-[-16px] md:mr-[6px] lg:mr-[10px] hover:rounded-[30px] font-semibold cursor-pointer py-[8px] px-[16px]'
+                >
+                  Xem tất cả
+                </Link>
+              </div>
+              <div
+                className={cx(
+                  'listVideo',
+                  'listVideo flex flex-1 w-full overflow-x-scroll md:flex-wrap mt-2 md:mt-0 md:px-10 md:pr-3',
+                )}
+              >
+                {likeVideoState && likeVideoState.length > 0 ? (
+                  likeVideoState.map((item, index) => (
+                    <div
+                      onClick={() => handleWatch2(item.itemLike)}
+                      key={`itemVideo-${index}`}
+                      className='itemVideo flex-shrink-0 mr-2 w-[39%] pb-[12px] md:pb-[16px] md:w-[47%] lg:w-[23.5%] mt-[10px] md:mt-[20px] ease-linear duration-100 cursor-pointer hover:bg-[#fff3] hover:md:bg-transparent hover:rounded-t-[8px] hover:overflow-hidden'
+                    >
+                      <div className='imgItemVideo rounded-[8px] overflow-hidden md:border-[1px] md:border-[#1f1f1f]'>
+                        <img
+                          className='w-full max-h-[120px] min-h-[90px] md:min-h-[120px] object-cover'
+                          src={item ? item.itemLike.urlThumbnail : ''}
+                          alt=''
+                        />
+                      </div>
+                      <div className='titleVideo text-[12px] md:text-[14px] mt-1 overflow-hidden line-clamp-2 xs:line-clamp-1 md:line-clamp-2 '>
+                        {item ? item.itemLike.VideoTitle : ''}
+                      </div>
+                      <div className='titleChannle text-[12px] mt-2 gap-1 text-[#AAAAAA] flex items-center'>
+                        <div className='title overflow-hidden line-clamp-1 '>
+                          {item ? item.itemLike.channelTitle : ''}
+                        </div>
+                        <div className='check'>
+                          <svg
+                            height='14'
+                            viewBox='0 0 24 24'
+                            width='14'
+                            focusable='false'
+                            fill='currentColor'
+                            className=''
+                          >
+                            <path d='M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zM9.8 17.3l-4.2-4.1L7 11.8l2.8 2.7L17 7.4l1.4 1.4-8.6 8.5z'></path>
+                            <path d='M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zM9.8 17.3l-4.2-4.1L7 11.8l2.8 2.7L17 7.4l1.4 1.4-8.6 8.5z'></path>
+                          </svg>
+                        </div>
+                      </div>
+                      <div className='text-[11px] text-[#AAAAAA] hidden md:flex items-center'>
+                        <div className='view'>
+                          {item ? item.itemLike.view : ''} lượt xem
+                        </div>
+                        <div className={cx('time-upload')}>
+                          {item ? calculatorTime(item.itemLike.publishTime) : ''} trước
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className='text-center mx-auto'>Bạn chưa xem video nào.</div>
+                )}
+                <div className='hidden md:block border-b-[1px] border-[#fff3] mt-[30px] w-full'></div>
+              </div>
             </div>
           </div>
           <div className='userInfo w-[20%] text-[#AAAAAA] text-[12px] mt-[70px]  md:px-0 lg:px-6 hidden md:block'>
@@ -185,7 +318,7 @@ function Library() {
             </div>
             <div className='border-b-[1px] border-[#fff3] flex items-center justify-between py-2'>
               <div className=''>Kênh đăng ký</div>
-              <div className=''>0</div>
+              <div className=''>{listSeenState ? listSeenState.length : 0}</div>
             </div>
             <div className=' border-b-[1px] border-[#fff3] flex justify-between py-2'>
               <div className=''>Video tải lên</div>
@@ -193,7 +326,7 @@ function Library() {
             </div>
             <div className=' border-b-[1px] border-[#fff3] flex justify-between py-2'>
               <div className=''>Video đã thích</div>
-              <div className=''>0</div>
+              <div className=''>{likeVideoState ? likeVideoState.length : 0}</div>
             </div>
           </div>
         </>

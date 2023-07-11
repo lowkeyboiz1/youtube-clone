@@ -1,6 +1,6 @@
 export const subscribeStatus = (bol) => {
     return {
-      type: "listSeen",
+      type: "subscribe",
       payload: bol,
     };
   };
