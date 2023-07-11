@@ -103,20 +103,18 @@ const VideoItem = forwardRef(
             small && '!mt-1 items-center md:items-start flex-shrink-0 md:max-w-[74%]'
           } ${search && 'md:!mt-0 px-[14px] py-[10px]'}`}
         >
-          {!small && (
-            <div
-              className={`ava flex w-[36px] h-[36px] flex-shrink-0 ${
-                search && 'lg:hidden'
-              }`}
-            >
-              <img
-                onClick={(e) => handleNavigateChannle(e)}
-                src={item ? item.urlChannel : ''}
-                alt=''
-                className='h-full w-full rounded-full'
-              />
-            </div>
-          )}
+          <div
+            className={`ava flex w-[36px] h-[36px] flex-shrink-0 ${
+              search && 'lg:hidden'
+            } ${small && 'lg:hidden'}`}
+          >
+            <img
+              onClick={(e) => handleNavigateChannle(e)}
+              src={item ? item.urlChannel : ''}
+              alt=''
+              className='h-full w-full rounded-full'
+            />
+          </div>
           <div
             className={`info flex-1 text-[14px] text-[#aaa] ${search && 'flex flex-col'}`}
           >

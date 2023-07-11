@@ -131,7 +131,6 @@ function Search({ className, blur }) {
             }}
             onBlur={() => {
               setShowGlassInput(false)
-              setShowResult(false)
             }}
           />
         </Tippy>
@@ -154,7 +153,10 @@ function Search({ className, blur }) {
 
       {/* Search item will appear if length search value >=1   */}
 
-      <div className='w-[64px] h-[42px] flex items-center justify-center border-[#303030] rounded-e-full bg-[#222222] border-l-[1px]'>
+      <div
+        onClick={handleSearch}
+        className='cursor-pointer w-[64px] h-[42px] flex items-center justify-center border-[#303030] rounded-e-full bg-[#222222] border-l-[1px]'
+      >
         <SearchIcon className='h-[24px] w-[24px] text-white' />
       </div>
     </div>

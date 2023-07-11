@@ -259,7 +259,7 @@ function HeaderOnly({ children }) {
                                 >
                                   <div className='h-[24px] w-[24px] rounded-full overflow-hidden mr-6 flex-shrink-0'>
                                     <img
-                                      className='object-cover h-full w-full'
+                                      className='object-fill h-full w-full'
                                       src={item.itemChannle.urlChannel}
                                       alt=''
                                     />
