@@ -26,7 +26,7 @@ function RegisterChanel() {
 
   const getChannlesHaveSubscribed = async (uid) => {
     const result = await axios.get(`${urlServer}/user/subscriptions/${uid}`)
-
+    console.log(result.data)
     setChannles(result.data.subscriptions)
   }
 
@@ -85,6 +85,7 @@ function RegisterChanel() {
                       key={`videoItemRegister-${item.itemChannle.videoId || index}`}
                       item={item.itemChannle}
                       index={index}
+                      register={true}
                     />
                   ))
                 ) : (

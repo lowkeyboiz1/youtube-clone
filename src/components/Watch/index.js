@@ -28,7 +28,6 @@ const cx = classNames.bind(styles)
 
 function Watch() {
   const { id } = useParams()
-  const [idVideo, setIdVideo] = useState('')
   const [count, setCount] = useState(0)
   const [title, setTitle] = useState('Tất cả')
   const [infoVideo, setInfoVideo] = useState([])
@@ -66,7 +65,6 @@ function Watch() {
     </IconButton>
   )
 
-  let JSONVideoId = JSON.parse(localStorage.getItem('idVideo'))
   let JSONVideoInfo = JSON.parse(localStorage.getItem('itemInfo'))
   useEffect(() => {
     setInfoVideo(() => {
@@ -135,7 +133,6 @@ function Watch() {
   }
 
   useEffect(() => {
-    setIdVideo(JSONVideoId)
     getInfoVideoFromDb()
     handleCheckStatusAction()
 
@@ -261,6 +258,7 @@ function Watch() {
         channleId: infoVideo.channelId,
         itemChannle: {
           channelId: infoVideo.channelId,
+          idVideo: infoVideo.idVideo,
           VideoTitle: infoVideo.titleVideo,
           publishTime: infoVideo.publicAt,
           videoId: infoVideo.videoId,
@@ -356,7 +354,7 @@ function Watch() {
           //<video></video>
           //iframe
           ref={player1Ref}
-          url={`https://www.youtube.com/watch?v=${id ? id : idVideo}`}
+          url={`https://www.youtube.com/watch?v=${id ? id : ''}`}
           controls={true}
           width='100%'
           height='100%'
@@ -405,7 +403,7 @@ function Watch() {
             >
               <ReactPlayer
                 ref={player2Ref}
-                url={`https://www.youtube.com/watch?v=${id ? id : idVideo}`}
+                url={`https://www.youtube.com/watch?v=${id ? id : ''}`}
                 controls={true}
                 width='100%'
                 height='100%'

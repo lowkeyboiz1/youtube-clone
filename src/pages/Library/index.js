@@ -32,7 +32,6 @@ function Library() {
   const navigate = useNavigate()
 
   const handleWatch = async (item) => {
-    console.log(item)
     localStorage.setItem('idVideo', JSON.stringify(item.videoId))
     localStorage.setItem(
       'itemInfo',
@@ -74,7 +73,6 @@ function Library() {
   }
 
   const handleWatch2 = async (item) => {
-    console.log(item)
     localStorage.setItem('idVideo', JSON.stringify(item.videoId))
     localStorage.setItem(
       'itemInfo',
@@ -123,7 +121,7 @@ function Library() {
     >
       {loggedInUser ? (
         <>
-          <div>
+          <div className='w-full'>
             <div className='videoInfo flex-1 overflow-hidden'>
               <div className='headerInfo w-full flex justify-between md:px-10'>
                 <div className='videoWatched flex items-center '>
@@ -193,7 +191,7 @@ function Library() {
                       <div className='text-[11px] text-[#AAAAAA] hidden md:flex items-center'>
                         <div className='view'>{item ? item.view : ''} lượt xem</div>
                         <div className={cx('time-upload')}>
-                          {item ? calculatorTime(item.publicAt) : ''} trước
+                          {item ? item.publicAt : ''} trước
                         </div>
                       </div>
                     </div>
@@ -274,13 +272,13 @@ function Library() {
                           {item ? item.itemLike.view : ''} lượt xem
                         </div>
                         <div className={cx('time-upload')}>
-                          {item ? calculatorTime(item.itemLike.publishTime) : ''} trước
+                          {item ? item.itemLike.publishTime : ''} trước
                         </div>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className='text-center mx-auto'>Bạn chưa xem video nào.</div>
+                  <div className='text-center mx-auto'>Bạn chưa thích video nào.</div>
                 )}
                 <div className='hidden md:block border-b-[1px] border-[#fff3] mt-[30px] w-full'></div>
               </div>

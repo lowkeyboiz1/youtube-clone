@@ -13,6 +13,7 @@ function Liked() {
             item={item.itemLike}
             index={index}
             search={true}
+            liked={true}
           />
         ))
       ) : (

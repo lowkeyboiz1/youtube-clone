@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import classnames from 'classnames/bind'
 import styles from './VideoItem.module.scss'
-import { useEffect, useState, forwardRef } from 'react'
+import { forwardRef } from 'react'
 import Tippy from '@tippyjs/react'
 import 'tippy.js/dist/tippy.css' // optional
 import { useNavigate } from 'react-router-dom'
@@ -14,21 +14,22 @@ import axios from 'axios'
 const cx = classnames.bind(styles)
 
 const VideoItem = forwardRef(
-  ({ item, urlChannleImg, index, small, data, lib, search }, ref) => {
+  ({ item, register, liked, urlChannleImg, index, small, data, lib, search }, ref) => {
+    const videoId = register ? item.idVideo : item.videoId
     const [loggedInUser] = useAuthState(auth)
     const navigate = useNavigate()
     const handleNavigate = async () => {
-      localStorage.setItem('idVideo', JSON.stringify(item.videoId))
+      localStorage.setItem('idVideo', JSON.stringify(videoId))
       localStorage.setItem(
         'itemInfo',
         JSON.stringify({
-          idVideo: item.videoId,
+          videoId: videoId,
           urlAva: item.urlChannel,
           urlVideo: item.urlThumbnail,
           titleVideo: item.VideoTitle,
           titleChannle: item.channelTitle,
           channelId: item.channelId,
-          publicAt: item.publishTime,
+          publicAt: calculatorTime(item.publishTime),
           urlThumbnail: item.urlThumbnail,
           view: item.view,
           like: item.like,
@@ -37,7 +38,6 @@ const VideoItem = forwardRef(
         }),
       )
 
-
       if (loggedInUser) {
         const result = await axios.post('http://localhost:4000/user/listSeen', {
           uid: loggedInUser.uid,
@@ -45,19 +45,19 @@ const VideoItem = forwardRef(
             urlAva: item.urlChannel,
             titleVideo: item.VideoTitle,
             titleChannle: item.channelTitle,
-            publicAt: item.publishTime,
+            publicAt: calculatorTime(item.publishTime),
             view: item.view,
             like: item.like,
             subscriber: item.subscriber,
             channelId: item.channelId,
             urlThumbnail: item.urlThumbnail,
-            videoId: item.videoId,
+            videoId: videoId,
             description: item.description,
           },
         })
       }
 
-      navigate(`/Watch/${item.videoId}`)
+      navigate(`/Watch/${register ? item.idVideo : item.videoId}`)
     }
 
     const handleNavigateChannle = (e) => {
@@ -66,8 +66,6 @@ const VideoItem = forwardRef(
     }
 
     return (
-      // <div className="">
-      //   {item.videoId !== JSON.parse(localStorage.getItem("idVideo")) &&
       <div
         onClick={() => handleNavigate()}
         ref={ref}
@@ -182,7 +180,11 @@ const VideoItem = forwardRef(
             >
               <div className='view'>{item ? item.view : ''} lượt xem</div>
               <div className={cx('time-upload')}>
-                {item ? calculatorTime(item.publishTime) + ' trước' : ' '}
+                {item
+                  ? liked
+                    ? item.publishTime + ' trước'
+                    : calculatorTime(item.publishTime) + ' trước'
+                  : ' '}
               </div>
             </div>
             {search && (

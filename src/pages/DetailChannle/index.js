@@ -60,6 +60,7 @@ function DetailChannle() {
   const getVideoInfoFromDb = async () => {
     try {
       const result = await axios.get(`${urlServer}/detailChannle/${id}`)
+
       setDataVideoChannle(result.data.videos)
     } catch (error) {
       console.error('Error fetching video info:', error)

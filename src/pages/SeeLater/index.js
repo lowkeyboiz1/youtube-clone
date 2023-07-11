@@ -18,7 +18,6 @@ function SeeLater() {
   const navigate = useNavigate()
 
   const handleWatch = async (item) => {
-    console.log(item)
     localStorage.setItem('idVideo', JSON.stringify(item.videoId))
     localStorage.setItem(
       'itemInfo',
@@ -98,7 +97,7 @@ function SeeLater() {
             <div className='text-[11px] text-[#AAAAAA] hidden md:flex items-center'>
               <div className='view'>{item ? item.view : ''} lượt xem</div>
               <div className={cx('time-upload')}>
-                {item ? calculatorTime(item.publicAt) : ''} trước
+                {item ? item.publicAt : ''} trước
               </div>
             </div>
           </div>
