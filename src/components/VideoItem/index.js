@@ -17,6 +17,13 @@ const cx = classnames.bind(styles)
 const VideoItem = forwardRef(
   ({ item, register, liked, urlChannleImg, index, small, data, lib, search }, ref) => {
     const videoId = register ? item.idVideo : item.videoId
+    const registerTime = register
+      ? item.publishTime + ' trước'
+      : calculatorTime(item.publishTime) + ' trước'
+    const likedTime = liked
+      ? item.publishTime + ' trước'
+      : calculatorTime(item.publishTime) + ' trước'
+
     const [loggedInUser] = useAuthState(auth)
     const navigate = useNavigate()
     const handleNavigate = async () => {
@@ -180,7 +187,7 @@ const VideoItem = forwardRef(
               <div className='view'>{item ? item.view : ''} lượt xem</div>
               <div className={cx('time-upload')}>
                 {item
-                  ? liked
+                  ? liked || register
                     ? item.publishTime + ' trước'
                     : calculatorTime(item.publishTime) + ' trước'
                   : ' '}
