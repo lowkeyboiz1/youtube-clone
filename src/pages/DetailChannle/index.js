@@ -35,6 +35,7 @@ const randomGradient = getRandomGradient()
 
 function DetailChannle() {
   const [dataVideoChannle, setDataVideoChannle] = useState()
+  const [titleVideo, setTitileVideo] = useState('Youtube')
 
   const [open, setOpen] = useState(false)
 
@@ -60,8 +61,9 @@ function DetailChannle() {
   const getVideoInfoFromDb = async () => {
     try {
       const result = await axios.get(`${urlServer}/detailChannle/${id}`)
-
       setDataVideoChannle(result.data.videos)
+      document.title = result.data.videos ? result.data.videos[0].channelTitle : 'Youtube'
+      // setTitileVideo(dataVideoChannle ? dataVideoChannle[0].channelTitle : 'Youtube')
     } catch (error) {
       console.error('Error fetching video info:', error)
     }
@@ -112,6 +114,15 @@ function DetailChannle() {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
+
+  // title theo title video
+  useEffect(() => {
+    document.title = dataVideoChannle ? dataVideoChannle[0].channelTitle : 'Youtube' // Thay đổi tiêu đề của trang khi component được render
+    // Có thể trả về một hàm cleanup từ useEffect để đặt lại tiêu đề khi component bị unmount
+    return () => {
+      document.title = 'Youtube' // Đặt lại tiêu đề gốc khi component bị unmount
+    }
+  }, [id])
 
   return (
     <div className='wrapper'>
