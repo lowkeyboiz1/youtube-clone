@@ -24,15 +24,6 @@ function ShortsVideoItem({
       playerRef.current.play()
     }
     setIsPlay(!isPlay)
-    if (document.exitFullscreen) {
-      document.exitFullscreen()
-    } else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen()
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen()
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen()
-    }
   }
   const options = {
     root: null,
@@ -75,7 +66,7 @@ function ShortsVideoItem({
       ref={warpperRef}
       className='flex snap-start justify-center mb-[56px] md:mb-[5vh] h-[calc(100vh_-_56px)] md:mt-[5vh] md:h-auto relative md:static'
     >
-      <div className='video md:w-[315px] w-full h-full md:h-[86vh] rounded-[8px] relative'>
+      <div className='video md:w-[315px] 2xl:w-[500px] 3xl:w-[600px] w-full h-full md:h-[86vh] 2xl:h-[92vh] rounded-[8px] relative'>
         <div
           className='reactplayerVideo object-cover w-full h-full overflow-hidden'
           // onClick={handleVideoClick}
@@ -87,7 +78,6 @@ function ShortsVideoItem({
             autoPlay
             loop
             muted={isMuted}
-            controls={false}
             className='h-full w-full object-fill md:object-cover'
           ></video>
         </div>

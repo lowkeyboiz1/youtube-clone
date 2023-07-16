@@ -90,7 +90,7 @@ function RegisterChanel() {
                   ))
                 ) : (
                   <div className='listItem w-full flex flex-wrap gap-4 md:justify-center'>
-                    {Array(9)
+                    {Array(18)
                       .fill()
                       .map((item, index) => (
                         <SkeletonLoad key={`skeleton-ItemRegister-${index}`} />

@@ -1,7 +1,7 @@
 function SkeletonLoad({ search, watch }) {
   return (
     <div
-      className={`item w-full mt-[20px] md:w-[40%] lg:w-[30%] ${
+      className={`item w-full mt-[20px] md:w-[40%] lg:w-[30%] 2xl:w-[22%] 3xl:w-[16%] ${
         search && 'md:!w-full md:flex'
       } ${watch && 'md:!w-full lg:!w-full !mt-[-10px] !mb-[10px]'}`}
     >

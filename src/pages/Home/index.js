@@ -2,11 +2,9 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import classnames from 'classnames/bind'
 import styles from './Home.module.scss'
 import VideoItem from '../../components/VideoItem'
-import { auth } from '../../config/firebase'
 import Footer from '../../components/Footer'
 import SkeletonLoad from '../../components/SkeletonLoad'
 import axios from 'axios'
-import { useAuthState } from 'react-firebase-hooks/auth'
 import { urlServer } from '../../urlServer'
 
 const cx = classnames.bind(styles)
@@ -44,17 +42,11 @@ export const tags = [
     id: 8,
     title: 'Rap',
   },
-
-  {
-    id: 11,
-    title: 'Bóng đá',
-  },
 ]
 function Home() {
   const [count, setCount] = useState(0)
   const [title, setTitle] = useState('Tất cả')
   const [apiTitle, setApiTitle] = useState([])
-  const [loggedInUser] = useAuthState(auth)
   const ITEMS_PER_PAGE = 9
 
   const [isLoading, setIsLoading] = useState(false)
@@ -177,7 +169,7 @@ function Home() {
               })}
               {isLoading && (
                 <div className='listItem w-full flex flex-wrap gap-4 md:justify-center'>
-                  {Array(ITEMS_PER_PAGE)
+                  {Array(18)
                     .fill()
                     .map((item, index) => (
                       <SkeletonLoad key={`skeleton-home-${index}`} />
@@ -187,7 +179,7 @@ function Home() {
             </>
           ) : (
             <div className='listItem w-full flex flex-wrap gap-4 md:justify-center'>
-              {Array(ITEMS_PER_PAGE)
+              {Array(18)
                 .fill()
                 .map((item, index) => (
                   <SkeletonLoad key={`skeleton-home-${index}`} />

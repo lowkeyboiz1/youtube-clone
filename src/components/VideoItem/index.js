@@ -80,7 +80,7 @@ const VideoItem = forwardRef(
         className={cx(
           'item-video',
           !small
-            ? 'item-video w-full mt-[20px] md:w-[40%] lg:w-[30%] cursor-pointer'
+            ? 'item-video w-full mt-[20px] md:w-[40%] lg:w-[30%] 2xl:w-[22%] 3xl:w-[16%] cursor-pointer'
             : 'gap-2 mt-[12px] md:mt-[6px] cursor-pointer md:flex',
           search && 'md:flex !w-full',
         )}

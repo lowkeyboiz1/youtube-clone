@@ -383,7 +383,13 @@ function Watch() {
       <div
         className={cx('wrapper', 'gap-[16px] md:px-[12px] md:mx-0 lg:flex md:w-[92%]')}
       >
-        <div className={`${isPlayer1Visible ? 'md:w-[120%] w-full' : 'min-h-[40vh]'}`}>
+        <div
+          className={`${
+            isPlayer1Visible
+              ? 'md:w-[120%] w-full'
+              : 'min-h-[40vh] 2xl:w-[50%] 3xl:w-[60%]'
+          }`}
+        >
           <div
             className={cx(
               'item',
@@ -660,7 +666,7 @@ function Watch() {
           className={cx(
             'item',
             'item3',
-            'md:px-1 mb-[70px] md:mb-[10px]',
+            'md:px-1 mb-[70px] md:mb-[10px] 2xl:w-[40%] 3xl:w-[46%]',
             isPlayer1Visible ? 'mt-[30px]' : 'w-full',
           )}
         >

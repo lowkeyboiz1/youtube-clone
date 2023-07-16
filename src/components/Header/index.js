@@ -131,7 +131,7 @@ function Header() {
         </div>
       )}
       <div
-        className={`center flex items-center gap-2 ml-6 justify-end max-w-[580px] flex-1 ${
+        className={`center flex items-center gap-2 ml-6 justify-end max-w-[580px] 2xl:max-w-[700px] 3xl:max-w-[1000px] flex-1 ${
           loggedInUser ? 'lg:ml-[150px]' : 'lg:ml-[120px]'
         }`}
       >
@@ -215,7 +215,7 @@ function Header() {
                   <div
                     className={cx(
                       'body',
-                      'pb-[8px] text-[14px] overflow-y-auto h-[78vh]',
+                      'pb-[8px] text-[14px] overflow-y-auto max-h-[78vh]',
                     )}
                   >
                     <div className='user-control py-[8px] border-b-[1px] border-[#fff3]'>

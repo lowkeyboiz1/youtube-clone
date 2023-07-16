@@ -136,29 +136,6 @@ function Channels() {
           </>
         ) : (
           <>
-            {/* {Array(9)
-              .fill()
-              .map((item, index) => (
-                <div
-                  key={`skeleton-channels-${index}`}
-                  className='item flex items-center justify-center mt-[16px]'
-                >
-                  <div className='w-[280px] md:w-[360px] flex justify-center flex-shrink-0'>
-                    <div className=' w-[136px] h-[136px] rounded-full overflow-hidden bg-[#fff3] animate-pulse'></div>
-                  </div>
-                  <div className='w-[26%] lg:w-[48%]'>
-                    <div className=' bg-[#fff3] animate-pulse h-[16px] w-[100px] rounded-sm'></div>
-                    <div className='bg-[#fff3] animate-pulse h-[14px] w-[120px] my-2 rounded-sm'></div>
-                    <div className='bg-[#fff3] animate-pulse h-[16px] w-full rounded-sm'></div>
-                    <div className='bg-[#fff3] animate-pulse h-[16px] w-full mt-2 rounded-sm'></div>
-                  </div>
-                  <div className='w-[200px] flex items-center justify-center'>
-                    <div className='hidden md:block'>
-                      <div className='text-[14px] font-semibold flex items-center gap-2 pr-[18px] bg-[#fff3] animate-pulse h-[36px] w-[120px] mt-2 rounded-3xl'></div>
-                    </div>
-                  </div>
-                </div>
-              ))} */}
             <div className='min-h-[calc(100vh_-_56px)] mt-[-40px] bg-black text-[20px] text-center flex justify-center items-center'>
               Các kênh bạn đăng ký sẽ xuất hiện ở đây.
             </div>

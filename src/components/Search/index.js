@@ -13,7 +13,6 @@ function Search({ className, blur }) {
   const [showGlassInput, setShowGlassInput] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const [showResult, setShowResult] = useState(true)
-  const [searchValue, setSearchValue] = useState()
   const [searchApiResult, setSearchApiResult] = useState([])
 
   const inputRef = useRef()
@@ -75,9 +74,24 @@ function Search({ className, blur }) {
     navigate(`/search/${inputValue}`)
     setShowResult(false)
   }
+  const searchContainerRef = useRef();
 
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target)) {
+        setShowResult(false)
+      }
+    }
+
+    document.addEventListener('click', handleClickOutside)
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside)
+    }
+  }, [])
   return (
     <div
+      ref={searchContainerRef}
       className={`search ${
         showGlassInput ? 'lg:min-w-[631px]' : 'lg:min-w-[600px]'
       } items-center rounded-full border-[1px] border-[#303030] h-[40px] hidden flex-1 md:flex ${className}`}
