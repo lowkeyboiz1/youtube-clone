@@ -17,24 +17,23 @@ function ShortsVideoItem({
   const playerRef = useRef(null)
   const warpperRef = useRef(null)
 
-
   const handleVideo = () => {
     if (isPlay) {
-      playerRef.current.pause();
+      playerRef.current.pause()
     } else {
-      playerRef.current.play();
+      playerRef.current.play()
     }
-    setIsPlay(!isPlay);
+    setIsPlay(!isPlay)
     if (document.exitFullscreen) {
-      document.exitFullscreen();
+      document.exitFullscreen()
     } else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen();
+      document.mozCancelFullScreen()
     } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
+      document.webkitExitFullscreen()
     } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
+      document.msExitFullscreen()
     }
-  };
+  }
   const options = {
     root: null,
     rootMargin: '0px',
@@ -88,6 +87,7 @@ function ShortsVideoItem({
             autoPlay
             loop
             muted={isMuted}
+            controls={false}
             className='h-full w-full object-fill md:object-cover'
           ></video>
         </div>
