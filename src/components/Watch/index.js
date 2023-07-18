@@ -381,7 +381,7 @@ function Watch() {
         </Tippy>
       </div>
       <div
-        className={cx('wrapper', 'gap-[16px] md:px-[12px] md:mx-0 lg:flex md:w-[92%]')}
+        className={cx('wrapper', 'gap-[16px] md:px-[12px] md:mx-0 lg:flex lg:justify-center md:w-[92%]')}
       >
         <div
           className={`${
