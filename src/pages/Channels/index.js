@@ -59,7 +59,7 @@ function Channels() {
                 >
                   <div className='img-channle w-[40px] h-[40px] xs:w-[100px] xs:h-[100px] md:w-[126px] md:h-[126px] rounded-full overflow-hidden'>
                     <img
-                      className='h-full w-full object-fill'
+                      className='object-fill md:object-cover h-full w-full '
                       src={item ? item.itemChannle.urlChannel : ''}
                       alt=''
                     />

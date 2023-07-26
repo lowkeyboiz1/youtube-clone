@@ -7,7 +7,6 @@ import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import Button from '../../components/Button'
 import { useSelector } from 'react-redux'
-import { calculatorTime } from '../../util/calculatorTime'
 import { urlServer } from '../../urlServer'
 const cx = classNames.bind(styles)
 
@@ -68,7 +67,7 @@ function Library() {
         },
       })
     }
-
+    console.log('hello', item.videoId)
     navigate(`/Watch/${item.videoId}`)
   }
 
@@ -241,7 +240,7 @@ function Library() {
                     >
                       <div className='imgItemVideo rounded-[8px] overflow-hidden md:border-[1px] md:border-[#1f1f1f]'>
                         <img
-                          className='w-full max-h-[120px] min-h-[90px] md:min-h-[120px] object-fill'
+                          className='w-full max-h-[120px] min-h-[90px] md:min-h-[120px] object-cover md:object-fill'
                           src={item ? item.itemLike.urlThumbnail : ''}
                           alt=''
                         />

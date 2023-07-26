@@ -17,12 +17,6 @@ const cx = classnames.bind(styles)
 const VideoItem = forwardRef(
   ({ item, register, liked, urlChannleImg, index, small, data, lib, search }, ref) => {
     const videoId = register ? item.idVideo : item.videoId
-    const registerTime = register
-      ? item.publishTime + ' trước'
-      : calculatorTime(item.publishTime) + ' trước'
-    const likedTime = liked
-      ? item.publishTime + ' trước'
-      : calculatorTime(item.publishTime) + ' trước'
 
     const [loggedInUser] = useAuthState(auth)
     const navigate = useNavigate()
@@ -64,8 +58,7 @@ const VideoItem = forwardRef(
           },
         })
       }
-
-      navigate(`/Watch/${register ? item.idVideo : item.videoId}`)
+      navigate(`/Watch/${item.videoId}`)
     }
 
     const handleNavigateChannle = (e) => {
@@ -101,7 +94,7 @@ const VideoItem = forwardRef(
             <img
               src={item ? item.urlThumbnail : ''}
               alt=''
-              className='!w-full !h-full object-fill'
+              className='!w-full !h-full object-fill md:object-cover'
             />
           </div>
         </div>
@@ -185,13 +178,29 @@ const VideoItem = forwardRef(
               }`}
             >
               <div className='view'>{item ? item.view : ''} lượt xem</div>
-              <div className={cx('time-upload')}>
-                {item
-                  ? liked || register
-                    ? item.publishTime + ' trước'
-                    : calculatorTime(item.publishTime) + ' trước'
-                  : ' '}
-              </div>
+              {register ? (
+                <div className={cx('time-upload')}>
+                  {/* {!calculatorTime(item.publishTime) !== '0'
+                    ? calculatorTime(item.publishTime) + ' trước'
+                    : item.publishTime + ' trước'} */}
+                  {console.log(
+                    item.publishTime.length,
+                    calculatorTime(item.publishTime),
+                    item.publishTime.length >= 5,
+                  )}
+                  {item.publishTime.length >= 10
+                    ? calculatorTime(item.publishTime) + ' trước'
+                    : item.publishTime + ' trước'}
+                </div>
+              ) : (
+                <div className={cx('time-upload')}>
+                  {item
+                    ? liked
+                      ? item.publishTime + ' trước'
+                      : calculatorTime(item.publishTime) + ' trước'
+                    : ' '}
+                </div>
+              )}
             </div>
             {search && (
               <div className='description text-[14px] md:text-[12px] lg:order-3 hidden md:block'>

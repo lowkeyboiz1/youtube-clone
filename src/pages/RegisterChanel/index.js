@@ -12,7 +12,6 @@ import { useSelector } from 'react-redux'
 import { urlServer } from '../../urlServer'
 
 function RegisterChanel() {
-  //register is dataform mongodb user subscriber
   const [loggedInUser] = useAuthState(auth)
 
   const [channles, setChannles] = useState([])
@@ -26,7 +25,6 @@ function RegisterChanel() {
 
   const getChannlesHaveSubscribed = async (uid) => {
     const result = await axios.get(`${urlServer}/user/subscriptions/${uid}`)
-    console.log(result.data)
     setChannles(result.data.subscriptions)
   }
 

@@ -74,7 +74,7 @@ function SeeLater() {
           >
             <div className='imgItemVideo rounded-[8px] overflow-hidden md:border-[1px] md:border-[#1f1f1f]'>
               <img
-                className='w-full max-h-[120px] min-h-[90px] md:min-h-[120px] object-cover'
+                className='w-full max-h-[120px] min-h-[90px] md:min-h-[120px] object-fill'
                 src={item ? item.urlThumbnail : ''}
                 alt=''
               />
